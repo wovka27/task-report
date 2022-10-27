@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, max-width=device-width ,initial-scale=1.0">
+  <title>TaskReport</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    button, input {
+      background-color: #fff;
+      border-radius: 5px;
+      border: none;
+      box-shadow: 0 0 1px 1px #0008;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      padding: 10px;
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .form {
+      flex-wrap: wrap;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 600px;
+      flex-direction: column;
+    }
+
+    .form__actions, .form__field, .form {
+      display: flex;
+      gap: 10px;
+    }
+    .form__field input {
+      flex: 0 1 85%;
+    }
+
+    #task {
+      padding-left: 10px;
+    }
+
+    .form__field button {
+      flex: 0 1 13%;
+    }
+
+    .form__actions {
+      flex-direction: column;
+    }
+
+
+    input, button {
+      padding: 8px 2px;
+    }
+
+    .result {
+      padding: 10px;
+      box-shadow: 0 0 1px 1px #0008;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      min-height: 300px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .result p {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="result">
+    <p id="result"></p>
+  </div>
+  <form name="form" class="form">
+    <div class="form__field">
+      <input tabindex="2" name="task" id="task" value="" placeholder="Введите отчет по задаче"/>
+      <button name="btn" tabindex="3">Добавить</button>
+    </div>
+    <div class="form__actions">
+      <button id="copy">Копировать</button>
+      <button id="clear">Очистить</button>
+    </div>
+  </form>
+</div>
+<script>
+  class TaskReport {
+    /**
+     * @param options ID's
+     */
+    constructor(options) {
+      this.form = document.forms[0].elements;
+      this.result = document.getElementById(options.result);
+      this.clearBtn = document.getElementById(options.clear);
+      this.copyBtn = document.getElementById(options.copy);
+      this.storageTasks = this.getStorageTasks;
+
+      this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
+      this.addTask = this.addTask.bind(this);
+      this.copy = this.copy.bind(this);
+      this.writeClipboard = this.writeClipboard.bind(this);
+
+      if (this.storageTasks()) {
+        this.renderTasks(this.storageTasks());
+      }
+
+      this.form[1].addEventListener('click', this.addTask)
+      this.clearBtn.addEventListener('click', this.deleteStorageTasks);
+      this.copyBtn.addEventListener('click', this.copy);
+    }
+
+    getStorageTasks() {
+      return JSON.parse(localStorage.getItem('tasks-report'));
+    }
+
+    setStorageTask(value) {
+      const tasks = this.storageTasks()
+      localStorage.setItem('tasks-report', JSON.stringify(Object.assign(tasks || {}, value)));
+      this.renderTasks(this.storageTasks())
+    }
+
+    copy(e) {
+      e.preventDefault();
+      this.writeClipboard()
+    }
+
+    async writeClipboard() {
+      if (!Boolean(this.result.innerText)) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(this.result.innerText)
+        alert('Текст скопирован!');
+      } catch (e) {
+        alert('Не удалось скопировать!');
+      }
+    }
+
+    deleteStorageTasks(e) {
+      e.preventDefault();
+      localStorage.removeItem('tasks-report');
+      this.result.innerText = '';
+    }
+
+    getTaskValues(tasks) {
+      let result = ''
+      for (const key in tasks) {
+        result += ' - ' + tasks[key] + '<br />';
+      }
+      return result
+    }
+
+    getDayWeek() {
+      const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+      return days[new Date().getDay()];
+    }
+
+    addTask(e) {
+      e.preventDefault();
+      const tasks = {}
+      tasks[this.form[0].value] = this.form[0].value;
+      this.setStorageTask(tasks)
+      this.form[0].value = '';
+    }
+
+    renderTasks(tasks) {
+      this.result.innerHTML = this.getDayWeek() + ':' + '<br />' + this.getTaskValues(tasks);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => new TaskReport({
+    result: 'result',
+    clear: 'clear',
+    copy: 'copy'
+  }))
+</script>
+</body>
+</html>
