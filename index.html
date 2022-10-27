@@ -255,9 +255,14 @@
     }
 
     deleteItem(e) {
+      const result = {};
       if (e.target.closest('.result-task-list__item-close')) {
         const tasks = Object.entries(this.storageTasks()).filter(([key, val]) => key !== e.target.id).join('');
-        this.setStorageTask(Object.assign(this.storageTasks(), tasks))
+        for (const [key, val] in tasks) {
+          result[key] = val;
+        }
+        console.log(result)
+        this.setStorageTask(Object.assign(this.storageTasks(), result))
       }
     }
 
