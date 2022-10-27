@@ -9,6 +9,46 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overflow-y: auto;
+    }
+
+    ul li {
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    ul li:focus-visible {
+      outline: none;
+    }
+
+    ul li > span {
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      display: flex;
+      background-color: #fff8;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+
+    ul li i {
+      flex: 0 1 90%;
+      padding: 3px;
     }
 
     body {
@@ -17,10 +57,8 @@
     }
 
     button, input {
-      background-color: #fff;
       border-radius: 5px;
       border: none;
-      box-shadow: 0 0 1px 1px #0008;
     }
 
     button {
@@ -33,7 +71,7 @@
       height: 100%;
       flex-direction: column;
       gap: 20px;
-      justify-content: space-between;
+      justify-content: center;
     }
 
     .form {
@@ -61,7 +99,10 @@
     }
 
     .form__actions {
-      flex-direction: column;
+
+    }
+    .form__actions button {
+      flex: 0 1 50%;
     }
 
 
@@ -71,7 +112,6 @@
 
     .result {
       padding: 10px;
-      box-shadow: 0 0 1px 1px #0008;
       border-radius: 5px;
       display: flex;
       flex-direction: column;
@@ -81,15 +121,39 @@
       max-width: 600px;
     }
     .result p {
+      display: none;
       max-height: 300px;
       overflow-y: auto;
       margin-bottom: 20px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body, button, input, textarea {
+        background: #333;
+        color: white;
+      }
+      .result, button, input, textarea  {
+        background-color: #444;
+        box-shadow: 0 0 1px 1px #fff8;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      body, button, input, textarea, li {
+        background: #fff;
+        color: #000;
+      }
+      .result, button, input, textarea, li  {
+        background-color: #fff;
+        box-shadow: 0 0 1px 1px #0008;
+      }
     }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="result">
+    <ul id="task-list" class="result-task-list"></ul>
     <p id="result"></p>
   </div>
   <form name="form" class="form">
@@ -113,20 +177,24 @@
       this.result = document.getElementById(options.result);
       this.clearBtn = document.getElementById(options.clear);
       this.copyBtn = document.getElementById(options.copy);
+      this.taskList = document.getElementById(options.taskList);
       this.storageTasks = this.getStorageTasks;
 
       this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
       this.addTask = this.addTask.bind(this);
       this.copy = this.copy.bind(this);
       this.writeClipboard = this.writeClipboard.bind(this);
+      this.getTaskItems = this.getTaskItems.bind(this);
 
       if (this.storageTasks()) {
+        this.renderTasksList(this.storageTasks())
         this.renderTasks(this.storageTasks());
       }
 
       this.form[1].addEventListener('click', this.addTask)
       this.clearBtn.addEventListener('click', this.deleteStorageTasks);
       this.copyBtn.addEventListener('click', this.copy);
+      this.taskList.addEventListener('click', this.deleteItem.bind(this))
     }
 
     getStorageTasks() {
@@ -137,6 +205,7 @@
       const tasks = this.storageTasks()
       localStorage.setItem('tasks-report', JSON.stringify(Object.assign(tasks || {}, value)));
       this.renderTasks(this.storageTasks())
+      this.renderTasksList(this.storageTasks());
     }
 
     copy(e) {
@@ -160,13 +229,14 @@
     deleteStorageTasks(e) {
       e.preventDefault();
       localStorage.removeItem('tasks-report');
-      this.result.innerText = '';
+      this.renderTasks();
+      this.renderTasksList()
     }
 
     getTaskValues(tasks) {
       let result = ''
       for (const key in tasks) {
-        result += ' - ' + tasks[key] + '<br />';
+        result += ` - ${tasks[key]}<br />`;
       }
       return result
     }
@@ -184,15 +254,45 @@
       this.form[0].value = '';
     }
 
-    renderTasks(tasks) {
-      this.result.innerHTML = this.getDayWeek() + ':' + '<br />' + this.getTaskValues(tasks);
+    deleteItem(e) {
+      if (e.target.closest('.result-task-list__item-close')) {
+        const tasks = Object.entries(this.storageTasks()).filter(([key, val]) => key !== e.target.id).join('');
+        this.setStorageTask(Object.assign(this.storageTasks(), tasks))
+      }
+    }
+
+    getTaskItemBody(val) {
+      return `
+            <li class="result-task-list__item">
+                <i contenteditable data-content="${val}">${val}</i>
+                <span class="result-task-list__item-close" id="${val}">X</span>
+            </li>`
+    }
+
+    getTaskItems(tasks) {
+      let result = ''
+      for (const key in tasks) {
+        result += this.getTaskItemBody(tasks[key]);
+      }
+      return result;
+    }
+
+    renderTasksList(tasks) {
+      if (tasks) {
+        this.taskList.innerHTML = this.getTaskItems(tasks)
+      }
+    }
+
+    renderTasks(tasks = '') {
+      this.result.innerHTML = tasks && `${this.getDayWeek()}:<br />${this.getTaskValues(tasks)}`;
     }
   }
 
   document.addEventListener('DOMContentLoaded', () => new TaskReport({
     result: 'result',
     clear: 'clear',
-    copy: 'copy'
+    copy: 'copy',
+    taskList: 'task-list',
   }))
 </script>
 </body>
