@@ -1,67 +1,46 @@
+import {getValues, getDayWeek, writeClipboard, storage} from './utils.js'
+
 export default class TaskReport {
     /**
      * @param options ID's
      */
     constructor(options) {
+        this.$ = (id) => document.getElementById(id)
         this.form = document.forms[0].elements;
-        this.result = document.getElementById(options.result);
-        this.clearBtn = document.getElementById(options.clear);
-        this.copyBtn = document.getElementById(options.copy);
-        this.taskList = document.getElementById(options.taskList);
+        this.result = this.$(options.result);
+        this.clearBtn = this.$(options.clear);
+        this.copyBtn = this.$(options.copy);
+        this.taskList = this.$(options.taskList);
         this.storageTasks = this.getStorageTasks;
 
-        this.writeClipboard = this.writeClipboard.bind(this);
         this.getTaskItems = this.getTaskItems.bind(this);
         this.init = this.init.bind(this);
         this.render = this.render.bind(this);
-
     }
 
     getStorageTasks() {
-        return JSON.parse(localStorage.getItem('tasks-report'));
+        return storage.get('tasks-report');
     }
 
     setStorageTask(value) {
         const tasks = this.storageTasks()
-        localStorage.setItem('tasks-report', JSON.stringify(Object.assign(tasks || {}, value)));
+        storage.set('tasks-report', Object.assign(tasks || {}, value));
         this.render(this.storageTasks())
     }
 
     copy(e) {
         e.preventDefault();
-        this.writeClipboard().then()
-    }
-
-    async writeClipboard() {
-        if (!Boolean(this.result.innerText)) {
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(this.result.innerText)
-            alert('Текст скопирован!');
-        } catch (e) {
-            alert('Не удалось скопировать!');
-        }
+        writeClipboard(this.result.innerText).then()
     }
 
     deleteStorageTasks(e) {
         e.preventDefault();
-        localStorage.removeItem('tasks-report');
+        storage.delete('tasks-report');
         this.render();
     }
 
     getTaskValues(tasks) {
-        let result = ''
-        for (const key in tasks) {
-            result += ` - ${tasks[key]}<br />`;
-        }
-        return result
-    }
-
-    getDayWeek() {
-        const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-        return days[new Date().getDay()];
+        return getValues(tasks, (key) =>` - ${tasks[key]}<br />`)
     }
 
     addTask(e) {
@@ -92,11 +71,7 @@ export default class TaskReport {
     }
 
     getTaskItems(tasks) {
-        let result = ''
-        for (const key in tasks) {
-            result += this.getTaskItemBody(tasks[key]);
-        }
-        return result;
+       return getValues(tasks, (key) => this.getTaskItemBody(tasks[key]))
     }
 
     render(tasks= '') {
@@ -109,7 +84,7 @@ export default class TaskReport {
     }
 
     renderTasks(tasks = '') {
-        this.result.innerHTML = tasks && `${this.getDayWeek()}:<br />${this.getTaskValues(tasks)}`;
+        this.result.innerHTML = tasks && `${getDayWeek()}:<br />${this.getTaskValues(tasks)}`;
     }
 
     init() {
