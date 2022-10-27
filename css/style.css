@@ -1,0 +1,150 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+ul li {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+ul li:focus-visible {
+    outline: none;
+}
+
+ul li > span {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    display: flex;
+    background-color: #fff8;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+ul li i {
+    flex: 0 1 90%;
+    padding: 3px;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+button, input {
+    border-radius: 5px;
+    border: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+.container {
+    padding: 10px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+.form {
+    flex-wrap: wrap;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    flex-direction: column;
+}
+
+.form__actions, .form__field, .form {
+    display: flex;
+    gap: 10px;
+}
+.form__field {
+    flex-direction: column;
+}
+.form__field textarea {
+    outline: none;
+    border: none;
+    padding: 10px;
+    resize: none;
+    border-radius: 5px;
+}
+
+#task {
+    padding-left: 10px;
+}
+
+.form__field button {
+    flex: 0 1 12%;
+}
+
+.form__actions {
+
+}
+.form__actions button {
+    flex: 0 1 50%;
+}
+
+
+input, button {
+    padding: 8px 2px;
+}
+
+.result {
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    min-height: 300px;
+    width: 100%;
+    max-width: 600px;
+}
+.result p {
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body, button, input, textarea {
+        background: #333;
+        color: white;
+    }
+    .result, button, input, textarea  {
+        background-color: #444;
+        box-shadow: 0 0 1px 1px #fff8;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    body, button, textarea, li {
+        background: #fff;
+        color: #000;
+    }
+    .result, button, textarea, li  {
+        background-color: #fff;
+        box-shadow: 0 0 1px 1px #0008;
+    }
+}
