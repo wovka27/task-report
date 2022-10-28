@@ -14,23 +14,24 @@ export default class TaskReport {
         }
     };
     constructor(options = {}) {
-        this.form = options.form.element;
         this.input = options.form.input;
+        this.form = options.form.element;
         this.addBtn = options.form.addBtn;
+        this.copyBtn = options.form.copyBtn;
+        this.clearBtn = options.form.clearBtn;
         this.taskList = options.taskList.element;
         this.deleteItemBtn = options.taskList.deleteItemBtn;
         this.taskValueItem = options.taskList.taskValueItem;
-        this.clearBtn = options.form.clearBtn;
-        this.copyBtn = options.form.copyBtn;
+
         this.storageTasks = this.getStorageTasks;
 
-        this.renderTasksList = this.renderTasksList.bind(this);
+        this.addTask = this.addTask.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
-        this.getTaskItems = this.getTaskItems.bind(this)
-        this.addTask = this.addTask.bind(this);
-        this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
         this.changeItem = this.changeItem.bind(this);
+        this.getTaskItems = this.getTaskItems.bind(this)
+        this.renderTasksList = this.renderTasksList.bind(this);
+        this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
 
         const tasks = this.storageTasks()
         this.input.value = null;
@@ -45,7 +46,7 @@ export default class TaskReport {
     }
 
     setStorageTask(value) {
-        storage.set('tasks-report', [...new Set([...this.storageTasks() ?? [], {...value}])]);
+        storage.set(this.#tasksReport, [...new Set([...this.storageTasks() ?? [], {...value}])]);
         this.renderTasksList(this.storageTasks())
     }
 
@@ -121,10 +122,10 @@ export default class TaskReport {
 
     clickHandler(e) {
         switch (e.target) {
-            case e.target.closest('.' + this.deleteItemBtn):
+            case e.target.closest(this.deleteItemBtn):
                 this.deleteItem(e);
                 break;
-            case e.target.closest('.' + this.taskValueItem):
+            case e.target.closest(this.taskValueItem):
                 this.changeItem(e);
                 break;
             case e.target.closest(this.addBtn):
