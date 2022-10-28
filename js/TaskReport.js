@@ -1,9 +1,27 @@
-import {getValues, getDayWeek, writeClipboard, storage, number, addHandlers, getTaskListItemBody} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, addHandlers, getTaskListItemBody} from './utils.js'
 
 export default class TaskReport {
-    constructor() {
-        this.form = document.forms[0].elements;
-        this.taskList = document.getElementById('task-list');
+    #tasksReport = 'tasks-report';
+    #dayWeek = getDayWeek();
+    #number = {
+        get random() {
+            const arr = [];
+            while(arr.length < 2){
+                const r = Math.floor(Math.random() * 100) + 1;
+                if(arr.indexOf(r) === -1) arr.push(r);
+            }
+            return arr[1];
+        }
+    };
+    constructor(options = {}) {
+        this.form = options.form.element;
+        this.input = options.form.input;
+        this.addBtn = options.form.addBtn;
+        this.taskList = options.taskList.element;
+        this.deleteItemBtn = options.taskList.deleteItemBtn;
+        this.taskValueItem = options.taskList.taskValueItem;
+        this.clearBtn = options.form.clearBtn;
+        this.copyBtn = options.form.copyBtn;
         this.storageTasks = this.getStorageTasks;
 
         this.renderTasksList = this.renderTasksList.bind(this);
@@ -15,7 +33,7 @@ export default class TaskReport {
         this.changeItem = this.changeItem.bind(this);
 
         const tasks = this.storageTasks()
-        this.form[0].value = null;
+        this.input.value = null;
         if (tasks) {
             this.renderTasksList(tasks)
         }
@@ -23,7 +41,7 @@ export default class TaskReport {
     }
 
     getStorageTasks() {
-        return storage.get('tasks-report');
+        return storage.get(this.#tasksReport);
     }
 
     setStorageTask(value) {
@@ -33,40 +51,63 @@ export default class TaskReport {
 
     copy(e) {
         e.preventDefault();
-        writeClipboard(`${
-            getDayWeek()}:\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
-        }`).then()
+        writeClipboard(`${this.#dayWeek}:\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
+        }`).then();
     }
 
     deleteStorageTasks(e) {
         e.preventDefault();
-        storage.delete('tasks-report');
+        storage.delete(this.#tasksReport);
         this.renderTasksList();
     }
 
     addTask(e) {
         e.preventDefault();
-        this.setStorageTask({id: number.random, value:this.form[0].value.trim()})
-        this.form[0].value = null;
+        if (!this.input.value || this.input.value === ' ') {
+           return;
+        }
+        this.setStorageTask({id: this.#number.random, value: this.input.value.trim()})
+        this.input.value = null;
     }
 
     deleteItem(e) {
         const tasks = this.storageTasks()
         const result = tasks.filter(item => item.id !== +e.target.id)
-        storage.set('tasks-report', result)
+        storage.set(this.#tasksReport, result)
 
         if (!tasks.length) {
             this.renderTasksList();
         }
         this.renderTasksList(result);
     }
+
     changeItem(e) {
         const tasks = this.storageTasks();
         const task = tasks.find(item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
         e.target.focus();
 
-        addHandlers(e, task, tasks, this.renderTasksList);
+        const handler = (event) => {
+            task.value = event.target.innerText;
+        }
+        const blur = () => {
+            const items = [...new Set([...tasks, task])]
+            storage.set('tasks-report', items)
+            this.renderTasksList(items)
+            e.target.removeEventListener('input', handler)
+            e.target.removeEventListener('keydown', keyDown)
+            e.target.removeEventListener('blur', blur)
+            e.target.contentEditable = false;
+        }
+
+        const keyDown = (e) => {
+            if (e.code === 'Enter') {
+                blur()
+            }
+        }
+        e.target.addEventListener('blur', blur)
+        e.target.addEventListener('keydown', keyDown)
+        e.target.addEventListener('input', handler)
     }
 
     getTaskItemBody(val) {
@@ -83,19 +124,19 @@ export default class TaskReport {
 
     clickHandler(e) {
         switch (e.target) {
-            case e.target.closest('.result-task-list__item-close'):
+            case e.target.closest('.' + this.deleteItemBtn):
                 this.deleteItem(e);
                 break;
-            case e.target.closest('.result-task-list__item > i'):
+            case e.target.closest('.' + this.taskValueItem):
                 this.changeItem(e);
                 break;
-            case e.target.closest('form button[name="btn"]'):
+            case e.target.closest(this.addBtn):
                 this.addTask(e);
                 break;
-            case e.target.closest('form #clear'):
+            case e.target.closest(this.clearBtn):
                 this.deleteStorageTasks(e);
                 break;
-            case e.target.closest('.form #copy'):
+            case e.target.closest(this.copyBtn):
                 this.copy(e);
                 break;
             default:

@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -7,8 +7,6 @@
 
 ul {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
     overflow: hidden;
     overflow-y: auto;
 }
@@ -16,7 +14,7 @@ ul {
 ul li {
     padding: 8px;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     border: 1px solid;
     margin: 10px 0;
@@ -64,18 +62,16 @@ button, textarea {
 }
 
 .form {
-    flex-wrap: wrap;
     margin: 0 auto;
     width: 100%;
     max-width: 600px;
-    flex-direction: column;
 }
 
 .form__actions, .form__field, .form {
     display: flex;
     gap: 10px;
 }
-.form__field {
+.form, .form__field {
     flex-direction: column;
 }
 .form__field textarea {
