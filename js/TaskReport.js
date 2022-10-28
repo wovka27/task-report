@@ -92,7 +92,7 @@ export default class TaskReport {
         }
         const blur = () => {
             const items = [...new Set([...tasks, task])]
-            storage.set('tasks-report', items)
+            storage.set(this.#tasksReport, items)
             this.renderTasksList(items)
             e.target.removeEventListener('input', handler)
             e.target.removeEventListener('keydown', keyDown)
@@ -100,11 +100,8 @@ export default class TaskReport {
             e.target.contentEditable = false;
         }
 
-        const keyDown = (e) => {
-            if (e.code === 'Enter') {
-                blur()
-            }
-        }
+        const keyDown = (e) => e.code === 'Enter' && blur()
+
         e.target.addEventListener('blur', blur)
         e.target.addEventListener('keydown', keyDown)
         e.target.addEventListener('input', handler)
