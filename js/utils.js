@@ -33,7 +33,7 @@ export const number = {
     }
 }
 
-export const gettaskListItemBody = (item) => `
+export const getTaskListItemBody = (item) => `
             <li class="result-task-list__item">
                 <i data-content="${item.id}">${item.value.trim()}</i>
                 <span class="result-task-list__item-close" id="${item.id}">X</span>

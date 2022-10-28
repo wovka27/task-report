@@ -1,4 +1,4 @@
-import {getValues, getDayWeek, writeClipboard, storage, number, addHandlers, gettaskListItemBody} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, number, addHandlers, getTaskListItemBody} from './utils.js'
 
 export default class TaskReport {
     constructor(options) {
@@ -64,7 +64,7 @@ export default class TaskReport {
     }
 
     getTaskItemBody(val) {
-        return gettaskListItemBody(val)
+        return getTaskListItemBody(val)
     }
 
     getTaskItems(tasks) {
