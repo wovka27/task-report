@@ -40,6 +40,7 @@ ul li > span {
 ul li i {
     flex: 0 1 90%;
     padding: 3px;
+    height: 100%;
 }
 
 body {
