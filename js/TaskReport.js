@@ -1,9 +1,9 @@
 import {getValues, getDayWeek, writeClipboard, storage, number, addHandlers, getTaskListItemBody} from './utils.js'
 
 export default class TaskReport {
-    constructor(options) {
+    constructor() {
         this.form = document.forms[0].elements;
-        this.taskList = document.getElementById(options.taskList);
+        this.taskList = document.getElementById('task-list');
         this.storageTasks = this.getStorageTasks;
 
         this.init = this.init.bind(this);
@@ -14,6 +14,12 @@ export default class TaskReport {
         this.addTask = this.addTask.bind(this);
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
         this.changeItem = this.changeItem.bind(this);
+
+        const tasks = this.storageTasks()
+        if (tasks) {
+            this.renderTasksList(tasks)
+        }
+        document.body.addEventListener('click', this.clickHandler.bind(this))
     }
 
     getStorageTasks() {
@@ -95,13 +101,5 @@ export default class TaskReport {
             default:
                 return;
         }
-    }
-
-    init() {
-        const tasks = this.storageTasks()
-        if (tasks) {
-            this.renderTasksList(tasks)
-        }
-        document.body.addEventListener('click', this.clickHandler.bind(this))
     }
 }
