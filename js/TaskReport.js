@@ -6,7 +6,6 @@ export default class TaskReport {
         this.taskList = document.getElementById('task-list');
         this.storageTasks = this.getStorageTasks;
 
-        this.init = this.init.bind(this);
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
