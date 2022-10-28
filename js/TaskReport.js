@@ -74,7 +74,7 @@ export default class TaskReport {
         }
 
         const keyDown = (e) => {
-            if (e.code === 'Enter' && e.ctrlKey) {
+            if (e.code === 'Enter') {
                 blur()
             }
         }
