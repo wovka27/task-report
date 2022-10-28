@@ -15,6 +15,7 @@ export default class TaskReport {
         this.changeItem = this.changeItem.bind(this);
 
         const tasks = this.storageTasks()
+        this.form[0].value = null;
         if (tasks) {
             this.renderTasksList(tasks)
         }
@@ -46,7 +47,7 @@ export default class TaskReport {
     addTask(e) {
         e.preventDefault();
         this.setStorageTask({id: number.random, value:this.form[0].value.trim()})
-        this.form[0].value = '';
+        this.form[0].value = null;
     }
 
     deleteItem(e) {
