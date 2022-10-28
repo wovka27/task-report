@@ -137,11 +137,11 @@ button {
 
 @media (prefers-color-scheme: light) {
     body, button, textarea, li {
-        background: #fff;
+        background: #d7d7d7;
         color: #000;
     }
     .result, button, textarea, li  {
-        background-color: #fff;
+        background-color: #d7d7d7;
         box-shadow: 0 0 1px 1px #0008;
     }
 }
