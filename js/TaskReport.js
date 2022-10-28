@@ -30,6 +30,7 @@ export default class TaskReport {
         this.changeItem = this.changeItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
         this.getTaskItems = this.getTaskItems.bind(this)
+        this.getChangeTask = this.getChangeTask.bind(this);
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
 
@@ -71,9 +72,15 @@ export default class TaskReport {
         this.input.value = null;
     }
 
-    deleteItem(e) {
+    getChangeTask(type , cb) {
         const tasks = this.storageTasks()
-        const result = tasks.filter(item => item.id !== +e.target.id)
+        const result = tasks[type](item => cb(item))
+
+        return {tasks, result}
+    }
+
+    deleteItem(e) {
+        const {tasks, result} = this.getChangeTask('filter', item => item.id !== +e.target.id)
         storage.set(this.#tasksReport, result)
 
         if (!tasks.length) {
@@ -83,16 +90,15 @@ export default class TaskReport {
     }
 
     changeItem(e) {
-        const tasks = this.storageTasks();
-        const task = tasks.find(item => item.id === +e.target.dataset.content)
+        const {tasks, result} = this.getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
         e.target.focus();
 
         const handler = (event) => {
-            task.value = event.target.innerText;
+            result.value = event.target.innerText;
         }
         const blur = () => {
-            const items = [...new Set([...tasks, task])]
+            const items = [...new Set([...tasks, result])]
             storage.set(this.#tasksReport, items)
             this.renderTasksList(items)
             e.target.removeEventListener('input', handler)
