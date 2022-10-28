@@ -49,13 +49,9 @@ body {
     height: 100vh;
 }
 
-button, input {
+button, textarea {
     border-radius: 5px;
     border: none;
-}
-
-button {
-    cursor: pointer;
 }
 
 .container {
@@ -106,8 +102,9 @@ button {
 }
 
 
-input, button {
-    padding: 8px 2px;
+button {
+    padding: 13px;
+    cursor: pointer;
 }
 
 .result {

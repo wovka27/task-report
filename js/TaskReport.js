@@ -1,15 +1,13 @@
-import {getValues, getDayWeek, writeClipboard, storage} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, number} from './utils.js'
 
 export default class TaskReport {
     constructor(options) {
         this.$ = (id) => document.getElementById(id)
         this.form = document.forms[0].elements;
-        this.result = this.$(options.result);
         this.clearBtn = this.$(options.clear);
         this.copyBtn = this.$(options.copy);
         this.taskList = this.$(options.taskList);
         this.storageTasks = this.getStorageTasks;
-        this.changeResult = {};
 
         this.init = this.init.bind(this);
         this.render = this.render.bind(this);
@@ -23,14 +21,15 @@ export default class TaskReport {
     }
 
     setStorageTask(value) {
-        const tasks = this.storageTasks()
-        storage.set('tasks-report', Object.assign(tasks || {}, value));
+        storage.set('tasks-report', [...new Set([...this.storageTasks() ?? [], {...value}])]);
         this.render(this.storageTasks())
     }
 
     copy(e) {
         e.preventDefault();
-        writeClipboard(this.result.innerText).then()
+        writeClipboard(`${
+            getDayWeek()}\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
+        }`).then()
     }
 
     deleteStorageTasks(e) {
@@ -39,72 +38,65 @@ export default class TaskReport {
         this.render();
     }
 
-    getTaskValues(tasks) {
-        return getValues(tasks, (key) =>` - ${tasks[key]}<br />`)
-    }
-
     addTask(e) {
         e.preventDefault();
-        const tasks = {}
-        tasks[this.form[0].value] = this.form[0].value;
-        this.setStorageTask(tasks)
+        this.setStorageTask({id: number.random, value:this.form[0].value.trim()})
         this.form[0].value = '';
     }
 
     deleteItem(e) {
-        const result = {};
-        const start = this.storageTasks()
-        for (const key in start) {
-            if (start[key] !== e.target.id) {
-                result[key] = start[key];
-            }
-        }
+        const tasks = this.storageTasks()
+        const result = tasks.filter(item => item.id !== +e.target.id)
         storage.set('tasks-report', result)
         this.render(result);
-        if (!Object.keys(result).length) {
+        if (!tasks.length) {
             this.render();
         }
     }
     changeItem(e) {
         const itemDataSet = e.target.dataset.content;
         const tasks = this.storageTasks();
-        delete tasks[itemDataSet];
-        console.log(tasks, itemDataSet)
+        const task = tasks.find(item => item.id === +itemDataSet)
         e.target.contentEditable = true
         e.target.focus();
+
         const handler = (event) => {
-            this.changeResult[event.target.textContent] = event.target.textContent
-            console.log('input',this.changeResult)
+            task.value = event.target.innerText;
         }
         const blur = () => {
-            console.log('blur', Object.keys(this.changeResult)[0])
-            tasks[Object.keys(this.changeResult)[0]] = Object.keys(this.changeResult)[0]
-            storage.set('tasks-report', tasks)
-            this.render(tasks);
+            const items = [...new Set([...tasks, task])]
+            storage.set('tasks-report', items)
+            this.render(items)
             e.target.removeEventListener('input', handler)
+            e.target.removeEventListener('keydown', keyDown)
             e.target.removeEventListener('blur', blur)
-            this.changeResult = {};
-            e.target.contentEditable = true
+            e.target.contentEditable = false;
+        }
+
+        const keyDown = (e) => {
+            if (e.code === 'Enter' && e.ctrlKey) {
+                blur()
+            }
         }
         e.target.addEventListener('blur', blur)
+        e.target.addEventListener('keydown', keyDown)
         e.target.addEventListener('input', handler)
     }
 
     getTaskItemBody(val) {
         return `
             <li class="result-task-list__item">
-                <i data-content="${val}">${val}</i>
-                <span class="result-task-list__item-close" id="${val}">X</span>
+                <i data-content="${val.id}">${val.value.trim()}</i>
+                <span class="result-task-list__item-close" id="${val.id}">X</span>
             </li>`
     }
 
     getTaskItems(tasks) {
-       return getValues(tasks, (key) => this.getTaskItemBody(tasks[key]))
+       return getValues(tasks, (item) => this.getTaskItemBody(item))
     }
 
 
     render(tasks= '') {
-        this.renderTasks(tasks)
         this.renderTasksList(tasks)
     }
 
@@ -112,16 +104,14 @@ export default class TaskReport {
         this.taskList.innerHTML = tasks && this.getTaskItems(tasks)
     }
 
-    renderTasks(tasks = '') {
-        this.result.innerHTML = tasks && `${getDayWeek()}:<br />${this.getTaskValues(tasks)}`;
-    }
-
     taskListHandler(e) {
-        if (e.target.closest('.result-task-list__item-close')) {
-            this.deleteItem(e)
-        }
-        if (e.target.closest('.result-task-list__item > i')) {
-            this.changeItem(e)
+        switch (e.target) {
+            case e.target.closest('.result-task-list__item-close'):
+                this.deleteItem(e);
+            case e.target.closest('.result-task-list__item > i'):
+                this.changeItem(e)
+            default:
+                return;
         }
     }
 
@@ -129,7 +119,6 @@ export default class TaskReport {
         const tasks = this.storageTasks()
         if (tasks) {
             this.renderTasksList(tasks)
-            this.renderTasks(tasks);
         }
 
         this.form[1].addEventListener('click', this.addTask.bind(this))

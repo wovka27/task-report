@@ -1,13 +1,7 @@
 export const getDayWeek = () =>
     ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
 
-export function getValues (items, valCb) {
-    let result = ''
-    for (const key in items) {
-        result += valCb(key);
-    }
-    return result
-}
+export const getValues = (items, valCb) => items.map((item) => valCb(item)).join('')
 
 export async function writeClipboard(val = '') {
     if (!Boolean(val)) {
@@ -26,4 +20,15 @@ export const storage = {
     get: (name) => JSON.parse(localStorage.getItem(name)),
     set: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
     delete: (name) => localStorage.removeItem(name)
+}
+
+export const number = {
+    get random() {
+        const arr = [];
+        while(arr.length < 3){
+            const r = Math.floor(Math.random() * 100) + 1;
+            if(arr.indexOf(r) === -1) arr.push(r);
+        }
+        return arr[1];
+    }
 }
