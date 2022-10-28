@@ -1,18 +1,19 @@
-import {getValues, getDayWeek, writeClipboard, storage, number, $id} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, number, addHandlers, gettaskListItemBody} from './utils.js'
 
 export default class TaskReport {
     constructor(options) {
         this.form = document.forms[0].elements;
-        this.clearBtn = $id(options.clear);
-        this.copyBtn = $id(options.copy);
-        this.taskList = $id(options.taskList);
+        this.taskList = document.getElementById(options.taskList);
         this.storageTasks = this.getStorageTasks;
 
         this.init = this.init.bind(this);
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
-        this.getTaskItems = this.getTaskItems.bind(this);
+        this.getTaskItems = this.getTaskItems.bind(this)
+        this.addTask = this.addTask.bind(this);
+        this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
+        this.changeItem = this.changeItem.bind(this);
     }
 
     getStorageTasks() {
@@ -27,7 +28,7 @@ export default class TaskReport {
     copy(e) {
         e.preventDefault();
         writeClipboard(`${
-            getDayWeek()}\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
+            getDayWeek()}:\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
         }`).then()
     }
 
@@ -47,47 +48,23 @@ export default class TaskReport {
         const tasks = this.storageTasks()
         const result = tasks.filter(item => item.id !== +e.target.id)
         storage.set('tasks-report', result)
-        this.renderTasksList(result);
+
         if (!tasks.length) {
             this.renderTasksList();
         }
+        this.renderTasksList(result);
     }
     changeItem(e) {
-        const itemDataSet = e.target.dataset.content;
         const tasks = this.storageTasks();
-        const task = tasks.find(item => item.id === +itemDataSet)
+        const task = tasks.find(item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
         e.target.focus();
 
-        const handler = (event) => {
-            task.value = event.target.innerText;
-        }
-        const blur = () => {
-            const items = [...new Set([...tasks, task])]
-            storage.set('tasks-report', items)
-            this.renderTasksList(items)
-            e.target.removeEventListener('input', handler)
-            e.target.removeEventListener('keydown', keyDown)
-            e.target.removeEventListener('blur', blur)
-            e.target.contentEditable = false;
-        }
-
-        const keyDown = (e) => {
-            if (e.code === 'Enter') {
-                blur()
-            }
-        }
-        e.target.addEventListener('blur', blur)
-        e.target.addEventListener('keydown', keyDown)
-        e.target.addEventListener('input', handler)
+        addHandlers(e, task, tasks, this.renderTasksList);
     }
 
     getTaskItemBody(val) {
-        return `
-            <li class="result-task-list__item">
-                <i data-content="${val.id}">${val.value.trim()}</i>
-                <span class="result-task-list__item-close" id="${val.id}">X</span>
-            </li>`
+        return gettaskListItemBody(val)
     }
 
     getTaskItems(tasks) {
@@ -98,12 +75,23 @@ export default class TaskReport {
         this.taskList.innerHTML = tasks && this.getTaskItems(tasks)
     }
 
-    taskListHandler(e) {
+    clickHandler(e) {
         switch (e.target) {
             case e.target.closest('.result-task-list__item-close'):
                 this.deleteItem(e);
+                break;
             case e.target.closest('.result-task-list__item > i'):
-                this.changeItem(e)
+                this.changeItem(e);
+                break;
+            case e.target.closest('form button[name="btn"]'):
+                this.addTask(e);
+                break;
+            case e.target.closest('form #clear'):
+                this.deleteStorageTasks(e);
+                break;
+            case e.target.closest('.form #copy'):
+                this.copy(e);
+                break;
             default:
                 return;
         }
@@ -114,10 +102,6 @@ export default class TaskReport {
         if (tasks) {
             this.renderTasksList(tasks)
         }
-
-        this.form[1].addEventListener('click', this.addTask.bind(this))
-        this.clearBtn.addEventListener('click', this.deleteStorageTasks.bind(this));
-        this.copyBtn.addEventListener('click', this.copy.bind(this));
-        this.taskList.addEventListener('click', this.taskListHandler.bind(this))
+        document.body.addEventListener('click', this.clickHandler.bind(this))
     }
 }

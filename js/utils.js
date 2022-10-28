@@ -3,8 +3,6 @@ export const getDayWeek = () =>
 
 export const getValues = (items, valCb) => items.map((item) => valCb(item)).join('');
 
-export const $id = (id) => document.getElementById(id);
-
 export const writeClipboard = async (val = '') => {
     if (!Boolean(val)) {
         return;
@@ -33,4 +31,34 @@ export const number = {
         }
         return arr[1];
     }
+}
+
+export const gettaskListItemBody = (item) => `
+            <li class="result-task-list__item">
+                <i data-content="${item.id}">${item.value.trim()}</i>
+                <span class="result-task-list__item-close" id="${item.id}">X</span>
+            </li>`
+
+export const addHandlers = (e, task, tasks, cb) => {
+    const handler = (event) => {
+        task.value = event.target.innerText;
+    }
+    const blur = () => {
+        const items = [...new Set([...tasks, task])]
+        storage.set('tasks-report', items)
+        cb(items)
+        e.target.removeEventListener('input', handler)
+        e.target.removeEventListener('keydown', keyDown)
+        e.target.removeEventListener('blur', blur)
+        e.target.contentEditable = false;
+    }
+
+    const keyDown = (e) => {
+        if (e.code === 'Enter') {
+            blur()
+        }
+    }
+    e.target.addEventListener('blur', blur)
+    e.target.addEventListener('keydown', keyDown)
+    e.target.addEventListener('input', handler)
 }
