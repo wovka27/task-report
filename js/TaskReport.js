@@ -1,4 +1,4 @@
-import {getValues, getDayWeek, writeClipboard, storage, addHandlers, getTaskListItemBody} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, getTaskListItemBody} from './utils.js'
 
 export default class TaskReport {
     #tasksReport = 'tasks-report';
