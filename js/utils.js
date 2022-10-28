@@ -1,9 +1,11 @@
 export const getDayWeek = () =>
     ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
 
-export const getValues = (items, valCb) => items.map((item) => valCb(item)).join('')
+export const getValues = (items, valCb) => items.map((item) => valCb(item)).join('');
 
-export async function writeClipboard(val = '') {
+export const $id = (id) => document.getElementById(id);
+
+export const writeClipboard = async (val = '') => {
     if (!Boolean(val)) {
         return;
     }

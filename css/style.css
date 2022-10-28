@@ -107,12 +107,23 @@ button {
     cursor: pointer;
 }
 
+.result {
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    min-height: 300px;
+    width: 100%;
+    max-width: 600px;
+}
+
 @media (prefers-color-scheme: dark) {
     body, button, textarea {
         background: #333;
         color: white;
     }
-    button, textarea  {
+    .result, button, textarea  {
         background-color: #444;
         box-shadow: 0 0 1px 1px #fff8;
     }

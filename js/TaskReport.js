@@ -1,16 +1,15 @@
-import {getValues, getDayWeek, writeClipboard, storage, number} from './utils.js'
+import {getValues, getDayWeek, writeClipboard, storage, number, $id} from './utils.js'
 
 export default class TaskReport {
     constructor(options) {
-        this.$ = (id) => document.getElementById(id)
         this.form = document.forms[0].elements;
-        this.clearBtn = this.$(options.clear);
-        this.copyBtn = this.$(options.copy);
-        this.taskList = this.$(options.taskList);
+        this.clearBtn = $id(options.clear);
+        this.copyBtn = $id(options.copy);
+        this.taskList = $id(options.taskList);
         this.storageTasks = this.getStorageTasks;
 
         this.init = this.init.bind(this);
-        this.render = this.render.bind(this);
+        this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
         this.getTaskItems = this.getTaskItems.bind(this);
@@ -22,7 +21,7 @@ export default class TaskReport {
 
     setStorageTask(value) {
         storage.set('tasks-report', [...new Set([...this.storageTasks() ?? [], {...value}])]);
-        this.render(this.storageTasks())
+        this.renderTasksList(this.storageTasks())
     }
 
     copy(e) {
@@ -35,7 +34,7 @@ export default class TaskReport {
     deleteStorageTasks(e) {
         e.preventDefault();
         storage.delete('tasks-report');
-        this.render();
+        this.renderTasksList();
     }
 
     addTask(e) {
@@ -48,9 +47,9 @@ export default class TaskReport {
         const tasks = this.storageTasks()
         const result = tasks.filter(item => item.id !== +e.target.id)
         storage.set('tasks-report', result)
-        this.render(result);
+        this.renderTasksList(result);
         if (!tasks.length) {
-            this.render();
+            this.renderTasksList();
         }
     }
     changeItem(e) {
@@ -66,7 +65,7 @@ export default class TaskReport {
         const blur = () => {
             const items = [...new Set([...tasks, task])]
             storage.set('tasks-report', items)
-            this.render(items)
+            this.renderTasksList(items)
             e.target.removeEventListener('input', handler)
             e.target.removeEventListener('keydown', keyDown)
             e.target.removeEventListener('blur', blur)
@@ -93,11 +92,6 @@ export default class TaskReport {
 
     getTaskItems(tasks) {
        return getValues(tasks, (item) => this.getTaskItemBody(item))
-    }
-
-
-    render(tasks= '') {
-        this.renderTasksList(tasks)
     }
 
     renderTasksList(tasks = '') {
