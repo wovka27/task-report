@@ -107,29 +107,12 @@ button {
     cursor: pointer;
 }
 
-.result {
-    padding: 10px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    min-height: 300px;
-    width: 100%;
-    max-width: 600px;
-}
-.result p {
-    display: none;
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 20px;
-}
-
 @media (prefers-color-scheme: dark) {
-    body, button, input, textarea {
+    body, button, textarea {
         background: #333;
         color: white;
     }
-    .result, button, input, textarea  {
+    button, textarea  {
         background-color: #444;
         box-shadow: 0 0 1px 1px #fff8;
     }
@@ -140,7 +123,7 @@ button {
         background: #d7d7d7;
         color: #000;
     }
-    .result, button, textarea, li  {
+    button, textarea, li  {
         background-color: #d7d7d7;
         box-shadow: 0 0 1px 1px #0008;
     }
