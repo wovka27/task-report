@@ -132,7 +132,7 @@ button {
         color: #000;
     }
     button, textarea, .result  {
-        background-color: #d7d7d7;
+        background-color: #afafaf;
         box-shadow: 0 0 1px 1px #0008;
     }
 }

@@ -1,18 +1,7 @@
-import {getValues, getDayWeek, writeClipboard, storage, getTaskListItemBody} from './utils.js'
+import {getValues, DAY_WEEK, writeClipboard, storage, getTaskListItemBody, TASK_REPORT, number} from './utils.js'
 
 export default class TaskReport {
-    #tasksReport = 'tasks-report';
-    #dayWeek = getDayWeek();
-    #number = {
-        get random() {
-            const arr = [];
-            while(arr.length < 2){
-                const r = Math.floor(Math.random() * 100) + 1;
-                if(arr.indexOf(r) === -1) arr.push(r);
-            }
-            return arr[1];
-        }
-    };
+
     constructor(options = {}) {
         this.input = options.form.input;
         this.form = options.form.element;
@@ -42,24 +31,40 @@ export default class TaskReport {
         document.body.addEventListener('click', this.clickHandler.bind(this))
     }
 
+    getChangeTask(type , cb) {
+        const tasks = this.storageTasks()
+        const result = tasks[type](item => cb(item))
+
+        return {tasks, result}
+    }
+
+    setEventListeners(target, handlers = [], type = true) {
+        const eventNames = ['input', 'keydown', 'blur'];
+        if (type) {
+            eventNames.forEach((name, index) => target.addEventListener(name, handlers[index]));
+        } else {
+            eventNames.forEach((name, index) => target.removeEventListener(name, handlers[index]));
+        }
+    }
+
     getStorageTasks() {
-        return storage.get(this.#tasksReport);
+        return storage.get(TASK_REPORT);
     }
 
     setStorageTask(value) {
-        storage.set(this.#tasksReport, [...new Set([...this.storageTasks() ?? [], {...value}])]);
+        storage.set(TASK_REPORT, [...new Set([...this.storageTasks() ?? [], value])]);
         this.renderTasksList(this.storageTasks())
     }
 
     copy(e) {
         e.preventDefault();
-        writeClipboard(`${this.#dayWeek}:\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
+        writeClipboard(`${DAY_WEEK}:\n${getValues(this.storageTasks(), (item) =>` - ${item.value}\n`)
         }`).then();
     }
 
     deleteStorageTasks(e) {
         e.preventDefault();
-        storage.delete(this.#tasksReport);
+        storage.delete(TASK_REPORT);
         this.renderTasksList();
     }
 
@@ -68,20 +73,13 @@ export default class TaskReport {
         if (!this.input.value || this.input.value === ' ') {
            return;
         }
-        this.setStorageTask({id: this.#number.random, value: this.input.value.trim()})
+        this.setStorageTask({id: number.random, value: this.input.value.trim()})
         this.input.value = null;
-    }
-
-    getChangeTask(type , cb) {
-        const tasks = this.storageTasks()
-        const result = tasks[type](item => cb(item))
-
-        return {tasks, result}
     }
 
     deleteItem(e) {
         const {tasks, result} = this.getChangeTask('filter', item => item.id !== +e.target.id)
-        storage.set(this.#tasksReport, result)
+        storage.set(TASK_REPORT, result)
 
         if (!tasks.length) {
             this.renderTasksList();
@@ -99,19 +97,14 @@ export default class TaskReport {
         }
         const blur = () => {
             const items = [...new Set([...tasks, result])]
-            storage.set(this.#tasksReport, items)
+            storage.set(TASK_REPORT, items)
             this.renderTasksList(items)
-            e.target.removeEventListener('input', handler)
-            e.target.removeEventListener('keydown', keyDown)
-            e.target.removeEventListener('blur', blur)
+            this.setEventListeners(e.target, [handler, keyDown, blur], false)
             e.target.contentEditable = false;
         }
 
         const keyDown = (e) => e.code === 'Enter' && blur()
-
-        e.target.addEventListener('blur', blur)
-        e.target.addEventListener('keydown', keyDown)
-        e.target.addEventListener('input', handler)
+        this.setEventListeners(e.target, [handler, keyDown, blur])
     }
 
     getTaskItemBody(val) {
