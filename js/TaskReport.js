@@ -2,8 +2,8 @@ import {
     DAY_WEEK,
     getChangeTask,
     getValues,
-    number,
-    setEventListeners, setStorageTask,
+    setEventListeners,
+    setStorageTask,
     storage,
     TASK_REPORT,
     writeClipboard
@@ -63,8 +63,8 @@ export default class TaskReport {
             return;
         }
 
-        setStorageTask({id: number.random, value: this.input.value.trim()}, this.renderTasksList)
-        this.controlAnimation(this.taskList.children.length -1, 'add');
+        setStorageTask({id: Date.now(), value: this.input.value.trim()}, this.renderTasksList)
+        this.controlAnimation(this.taskList.children.length - 1, 'add');
         this.input.value = null;
     }
 
@@ -103,7 +103,7 @@ export default class TaskReport {
             if (actionAnim === 'delete') {
                 this.taskList.removeChild(this.taskList.children[index])
             }
-        },delay)
+        }, delay)
     }
 
     createTask(item) {

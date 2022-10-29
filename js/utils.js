@@ -6,21 +6,6 @@ export const TASK_REPORT = 'tasks-report';
 
 export const getValues = (items, valCb) => items?.map((item) => valCb(item)).join('');
 
-/**
- * Получение рандомного уникального числа
- * @type {{readonly random: *}}
- */
-export const number = {
-    get random() {
-        const arr = [];
-        while (arr.length < 2) {
-            const r = Math.floor(Math.random() * 100) + 1;
-            if (arr.indexOf(r) === -1) arr.push(r);
-        }
-        return arr[1];
-    }
-};
-
 export const writeClipboard = async (val = '') => {
     if (!Boolean(val)) {
         return;
