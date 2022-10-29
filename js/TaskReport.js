@@ -61,6 +61,7 @@ export default class TaskReport {
         if (!this.input.value || this.input.value === ' ') {
             return;
         }
+
         setStorageTask({id: number.random, value: this.input.value.trim()}, this.renderTasksList)
         this.input.value = null;
     }
