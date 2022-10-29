@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', () => new TaskReport({
     },
     taskList: {
         element: document.getElementById('task-list'),
-        deleteItemBtn: '.result-task-list__item-close',
-        taskValueItem: '.result-task-list__item-content',
+        taskItem: {
+            className: 'result-task-list__item',
+            deleteItemBtn: '.result-task-list__item-close',
+            taskValueItem: '.result-task-list__item-content',
+        },
     },
 }));

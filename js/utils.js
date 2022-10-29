@@ -31,14 +31,29 @@ export const writeClipboard = async (val = '') => {
     }
 }
 
+export const getChangeTask = (type, cb) => {
+    const tasks = storage.get(TASK_REPORT);
+    const result = tasks[type](item => cb(item))
+
+    return {tasks, result}
+}
+
+export const setStorageTask = (value, render) => {
+    storage.set(TASK_REPORT, [...new Set([...storage.get(TASK_REPORT) ?? [], value])]);
+    render(storage.get(TASK_REPORT))
+}
+
 export const storage = {
     get: (name) => JSON.parse(localStorage.getItem(name)),
     set: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
     delete: (name) => localStorage.removeItem(name)
 }
 
-export const getTaskListItemBody = (item) => `
-            <li class="result-task-list__item">
-                <i class="result-task-list__item-content" data-content="${item.id}">${item.value.trim()}</i>
-                <span class="result-task-list__item-close" id="${item.id}">X</span>
-            </li>`
+export const setEventListeners = (target, handlers = [], type = true) => {
+    const eventNames = ['input', 'keydown', 'blur'];
+    if (type) {
+        eventNames.forEach((name, index) => target.addEventListener(name, handlers[index]));
+    } else {
+        eventNames.forEach((name, index) => target.removeEventListener(name, handlers[index]));
+    }
+}
