@@ -7,6 +7,10 @@ export const TASK_REPORT = 'tasks-report';
 
 export const getValues = (items, valCb) => items?.map((item) => valCb(item)).join('');
 
+/**
+ * Получение рандомного уникального числа
+ * @type {{readonly random: *}}
+ */
 export const number = {
     get random() {
         const arr = [];
