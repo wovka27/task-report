@@ -58,7 +58,7 @@ button, textarea {
 }
 
 .container {
-    padding: 20px;
+    padding: 20px 20px 100px 20px;
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -109,6 +109,7 @@ button {
 }
 
 .result {
+    height: 100%;
     padding: 10px;
     border-radius: 5px;
     display: flex;
@@ -118,11 +119,37 @@ button {
     width: 100%;
     max-width: 600px;
 }
+ul li.animated-add {
+    animation: add .3s 1 ease-in-out;
+}
+ul li.animated-delete {
+    animation: delete .3s 1 ease-in-out;
+}
+
+
+@keyframes add {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes delete {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
 
 @media (max-width: 767px) {
-    .container {
-        padding: 20px 20px 100px 20px;
-    }
     button {
         padding: 10px;
     }

@@ -28,7 +28,8 @@ export default class TaskReport {
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
-        this.getTaskItems = this.getTaskItems.bind(this)
+        this.controlAnimation = this.controlAnimation.bind(this);
+        this.createTask = this.createTask.bind(this)
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
 
@@ -63,17 +64,15 @@ export default class TaskReport {
         }
 
         setStorageTask({id: number.random, value: this.input.value.trim()}, this.renderTasksList)
+        this.controlAnimation(this.taskList.children.length -1, 'add');
         this.input.value = null;
     }
 
     deleteItem(e) {
-        const {tasks, result} = getChangeTask('filter', item => item.id !== +e.target.id)
+        const {result} = getChangeTask('filter', item => item.id !== +e.target.id)
         storage.set(TASK_REPORT, result)
-
-        if (!tasks.length) {
-            this.renderTasksList();
-        }
-        this.renderTasksList(result);
+        const index = Array.from(this.taskList.children).findIndex(item => item.children[1].id === e.target.id)
+        this.controlAnimation(index, 'delete');
     }
 
     changeItem(e) {
@@ -88,7 +87,7 @@ export default class TaskReport {
             const items = [...new Set([...tasks, result])]
             storage.set(TASK_REPORT, items)
             this.renderTasksList(items)
-            setEventListeners(e.target, [handler, keyDown, blur], false)
+            setEventListeners(e.target, [handler, keyDown, blur], true)
             e.target.contentEditable = false;
         }
 
@@ -96,20 +95,40 @@ export default class TaskReport {
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 
-    getTaskItemBody(item) {
-        return `
-            <li class="${this.taskItem}">
-                <i class="${this.taskValueItem.replace('.', '')}" data-content="${item.id}">${item.value.trim()}</i>
-                <span class="${this.deleteItemBtn.replace('.', '')}" id="${item.id}">X</span>
-            </li>`
+    controlAnimation(index, actionAnim, delay = 300) {
+        const item = this.taskList.children[index];
+        item?.classList.add(`animated-${actionAnim}`);
+        setTimeout(() => {
+            item?.classList.remove(`animated-${actionAnim}`)
+            if (actionAnim === 'delete') {
+                this.taskList.removeChild(this.taskList.children[index])
+            }
+        },delay)
     }
 
-    getTaskItems(tasks) {
-        return getValues(tasks, (item) => this.getTaskItemBody(item))
+    createTask(item) {
+        if (!item) {
+            return;
+        }
+
+        const li = document.createElement('li');
+        const i = document.createElement('i');
+        const span = document.createElement('span');
+        li.className = this.taskItem
+        i.classList.add(this.taskValueItem.replace('.', ''))
+        i.setAttribute('data-content', item.id);
+        i.textContent = item.value;
+        span.classList.add(this.deleteItemBtn.replace('.', ''))
+        span.textContent = 'X';
+        span.id = item.id
+        li.appendChild(i);
+        li.appendChild(span)
+        this.taskList.appendChild(li);
     }
 
-    renderTasksList(tasks = '') {
-        this.taskList.innerHTML = tasks && this.getTaskItems(tasks)
+    renderTasksList(tasks = []) {
+        this.taskList.innerHTML = '';
+        tasks.forEach(item => this.createTask(item))
     }
 
     clickHandler(e) {

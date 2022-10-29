@@ -1,5 +1,4 @@
-const getDayWeek = () =>
-    ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
+const getDayWeek = () => ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
 
 export const DAY_WEEK = getDayWeek();
 
@@ -14,9 +13,9 @@ export const getValues = (items, valCb) => items?.map((item) => valCb(item)).joi
 export const number = {
     get random() {
         const arr = [];
-        while(arr.length < 2){
+        while (arr.length < 2) {
             const r = Math.floor(Math.random() * 100) + 1;
-            if(arr.indexOf(r) === -1) arr.push(r);
+            if (arr.indexOf(r) === -1) arr.push(r);
         }
         return arr[1];
     }
@@ -53,11 +52,25 @@ export const storage = {
     delete: (name) => localStorage.removeItem(name)
 }
 
-export const setEventListeners = (target, handlers = [], type = true) => {
+export const setEventListeners = (target, handlers = [], remove = false) => {
     const eventNames = ['input', 'keydown', 'blur'];
-    if (type) {
+    if (!remove) {
         eventNames.forEach((name, index) => target.addEventListener(name, handlers[index]));
     } else {
         eventNames.forEach((name, index) => target.removeEventListener(name, handlers[index]));
     }
 }
+
+// export const throttle = (callback, timeout = 1000) => {
+//     let timer = null
+//
+//     return ((...args) => {
+//         if (timer) return
+//
+//         timer = setTimeout(() => {
+//             callback(...args)
+//             clearTimeout(timer)
+//             timer = null
+//         }, timeout)
+//     })()
+// }
