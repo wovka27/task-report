@@ -8,8 +8,8 @@
 
 ul {
     list-style-type: none;
-    overflow: hidden;
     overflow-y: auto;
+    height: 100%;
 }
 
 ul::-webkit-scrollbar {
@@ -109,7 +109,6 @@ button {
 }
 
 .result {
-    height: 100%;
     padding: 10px;
     border-radius: 5px;
     display: flex;
