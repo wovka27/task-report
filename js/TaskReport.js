@@ -95,7 +95,7 @@ export default class TaskReport {
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 
-    controlAnimation(index, actionAnim, delay = 300) {
+    controlAnimation(index, actionAnim, delay = 200) {
         const item = this.taskList.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         setTimeout(() => {
