@@ -1,12 +1,14 @@
-import TaskReport from '../js/TaskReport.js'
+import TaskReport from '../js/TaskReport.js';
+
+const form = document.forms[0];
 
 document.addEventListener('DOMContentLoaded', () => new TaskReport({
     form: {
-        element: document.forms[0],
-        input: document.forms[0][0],
-        addBtn: '#' + document.forms[0][1].id,
-        clearBtn: '#' + document.forms[0][3].id,
-        copyBtn: '#' + document.forms[0][2].id
+        element: form,
+        input: form[0],
+        addBtn: '#' + form[1].id,
+        clearBtn: '#' + form[3].id,
+        copyBtn: '#' + form[2].id
     },
     taskList: {
         element: document.getElementById('task-list'),
