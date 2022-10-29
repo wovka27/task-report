@@ -121,7 +121,7 @@ button {
 
 @media (max-width: 472px) {
     .container {
-        padding: 50px 20px;
+        padding: 20px 20px 50px 20px;
     }
     button {
         padding: 10px;
