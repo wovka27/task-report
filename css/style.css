@@ -119,6 +119,15 @@ button {
     max-width: 600px;
 }
 
+@media (max-width: 472px) {
+    .container {
+        padding: 50px 20px;
+    }
+    button {
+        padding: 10px;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     body, button, textarea {
         background: #333;
