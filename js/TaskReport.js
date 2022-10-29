@@ -47,10 +47,19 @@ export default class TaskReport {
         return storage.get(TASK_REPORT);
     }
 
+    get taskListEmpty() {
+        const tasks = this.storageTasks()
+        if (!tasks || tasks.length === 0) {
+            return true;
+        } else {
+            return false
+        }
+    }
+
     async copy(e) {
         e.preventDefault();
         const tasks = this.storageTasks();
-        if (!tasks) {
+        if (!tasks || tasks.length === 0) {
             this.message.showMessage('Не удалось скопировать. Список пуст.');
             return;
         }
@@ -64,7 +73,7 @@ export default class TaskReport {
 
     deleteStorageTasks(e) {
         e.preventDefault();
-        if (!this.storageTasks()) {
+        if (this.taskListEmpty) {
             this.message.showMessage('Список пуст')
             return;
         }
