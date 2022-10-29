@@ -8,6 +8,7 @@ import {
     TASK_REPORT,
     writeClipboard
 } from './utils.js'
+import Message from "./Message.js";
 
 export default class TaskReport {
 
@@ -23,6 +24,7 @@ export default class TaskReport {
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
 
         this.storageTasks = this.getStorageTasks;
+        this.message = new Message();
 
         this.addTask = this.addTask.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
@@ -45,16 +47,30 @@ export default class TaskReport {
         return storage.get(TASK_REPORT);
     }
 
-    copy(e) {
+    async copy(e) {
         e.preventDefault();
-        writeClipboard(`${DAY_WEEK}:\n${getValues(this.storageTasks(), (item) => ` - ${item.value}\n`)
-        }`).then();
+        const tasks = this.storageTasks();
+        if (!tasks) {
+            this.message.showMessage('Не удалось скопировать. Список пуст.');
+            return;
+        }
+        try {
+            await writeClipboard(`${DAY_WEEK}:\n${getValues(tasks, (item) => ` - ${item.value}\n`)}`)
+            this.message.showMessage('Успешно скопировано');
+        } catch (e) {
+            this.message.showMessage('Не удалось скопировать');
+        }
     }
 
     deleteStorageTasks(e) {
         e.preventDefault();
+        if (!this.storageTasks()) {
+            this.message.showMessage('Список пуст')
+            return;
+        }
         storage.delete(TASK_REPORT);
         this.renderTasksList();
+        this.message.showMessage('Очищено');
     }
 
     addTask(e) {
@@ -89,6 +105,7 @@ export default class TaskReport {
             this.renderTasksList(items)
             setEventListeners(e.target, [handler, keyDown, blur], true)
             e.target.contentEditable = false;
+            this.message.showMessage('Изменено');
         }
 
         const keyDown = (e) => e.code === 'Enter' && blur()
@@ -120,9 +137,8 @@ export default class TaskReport {
         i.textContent = item.value;
         span.classList.add(this.deleteItemBtn.replace('.', ''))
         span.textContent = 'X';
-        span.id = item.id
-        li.appendChild(i);
-        li.appendChild(span)
+        span.id = item.id;
+        [i, span].forEach(item => li.appendChild(item))
         this.taskList.appendChild(li);
     }
 
@@ -131,7 +147,7 @@ export default class TaskReport {
         tasks.forEach(item => this.createTask(item))
     }
 
-    clickHandler(e) {
+    async clickHandler(e) {
         switch (e.target) {
             case e.target.closest(this.deleteItemBtn):
                 this.deleteItem(e);
@@ -146,7 +162,7 @@ export default class TaskReport {
                 this.deleteStorageTasks(e);
                 break;
             case e.target.closest(this.copyBtn):
-                this.copy(e);
+                await this.copy(e);
                 break;
             default:
                 return;

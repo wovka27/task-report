@@ -10,13 +10,7 @@ export const writeClipboard = async (val = '') => {
     if (!Boolean(val)) {
         return;
     }
-
-    try {
-        await navigator.clipboard.writeText(val)
-        alert('Текст скопирован!');
-    } catch (e) {
-        alert('Не удалось скопировать!');
-    }
+    await navigator.clipboard.writeText(val);
 }
 
 export const getChangeTask = (type, cb) => {

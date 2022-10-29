@@ -50,6 +50,7 @@ ul li i {
 body {
     width: 100vw;
     height: 100vh;
+    position: relative;
 }
 
 button, textarea {
@@ -126,6 +127,56 @@ ul li.animated-delete {
     animation: delete .3s 1 ease-in-out;
 }
 
+.message {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    transition: all .3s;
+}
+.message, .message-inner-wrapper {
+    display: flex;
+    align-items: center;
+}
+.message-inner-wrapper {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 300px;
+}
+.message__close {
+    border: 1px solid;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.message.animated-show {
+    animation: show .5s 1 ease-in-out;
+}
+.message.animated-hidden {
+    animation: show .5s 1 ease-in-out;
+}
+
+@keyframes show {
+    from {
+        transform: translateY(200%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+@keyframes hidden {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(200%);
+    }
+}
 
 @keyframes add {
     from {
@@ -156,22 +207,22 @@ ul li.animated-delete {
 }
 
 @media (prefers-color-scheme: dark) {
-    body, button, textarea {
+    body, button, textarea, .message-inner-wrapper {
         background: #333;
         color: white;
     }
-    .result, button, textarea  {
+    .result, button, textarea, .message-inner-wrapper  {
         background-color: #444;
         box-shadow: 0 0 1px 1px #fff8;
     }
 }
 
 @media (prefers-color-scheme: light) {
-    body, button, textarea, li {
+    body, button, textarea, li, .message-inner-wrapper  {
         background: #d7d7d7;
         color: #000;
     }
-    button, textarea, .result  {
+    button, textarea, .result, .message-inner-wrapper   {
         background-color: #afafaf;
         box-shadow: 0 0 1px 1px #0008;
     }
