@@ -45,6 +45,7 @@ export default class TaskReport {
 
         this.storageTasks = this.getStorageTasks;
         this.message = new Message();
+        this.animation = {event: '', value: false}
 
         this.addTask = this.addTask.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
@@ -62,17 +63,7 @@ export default class TaskReport {
             this.renderTasksList(tasks)
         }
         document.body.addEventListener('click', this.clickHandler.bind(this))
-        document.body.addEventListener('keydown', this.keyDownHandler)
-    }
-
-    /**
-     *
-     * @param e {KeyboardEvent}
-     */
-    keyDownHandler(e) {
-        if (e.code === 'Enter' && this.input.value.length !== 0) {
-            this.addTask(e);
-        }
+        document.body.addEventListener('keydown', this.keyDownHandler);
     }
 
     getStorageTasks() {
@@ -82,6 +73,22 @@ export default class TaskReport {
     get taskListEmpty() {
         const tasks = this.storageTasks()
         return !tasks || tasks.length === 0;
+    }
+
+    /**
+     *
+     * @param cb {(animEnd: boolean) => void}
+     */
+    afterAnimationEnd(cb) {
+        let flag = false;
+        const handler = (e) => {
+            if (e.returnValue) {
+                flag = !flag;
+                cb(flag);
+                document.removeEventListener('animationend', handler)
+            }
+        }
+        document.addEventListener('animationend', handler)
     }
 
     /**
@@ -128,7 +135,7 @@ export default class TaskReport {
             return;
         }
         e.preventDefault();
-        setStorageTask({id: Date.now(), value: this.input.value.trim()}, this.renderTasksList)
+        setStorageTask({id: Date.now(), value: this.input.value}, this.renderTasksList)
         this.controlAnimation(this.taskList.children.length - 1, 'add');
         this.input.value = null;
         this.message.showMessage('Добавлено')
@@ -154,7 +161,9 @@ export default class TaskReport {
         e.target.contentEditable = true
 
         const handler = (event) => {
-            result.value = event.target.innerText.includes('\n') ? `<p>${event.target.innerText}</p>` : event.target.innerText;
+            result.value = event.target.innerText.includes('\n')
+                ? event.target.innerText.split('\n').map(i => `<p>${i}</p>`).join('')
+                : event.target.innerText;
         }
         const blur = () => {
             const items = [...new Set([...tasks, result])]
@@ -174,17 +183,18 @@ export default class TaskReport {
      *
      * @param index{number}
      * @param actionAnim{string}
-     * @param delay{number}
      */
-    controlAnimation(index, actionAnim, delay = 200) {
+    controlAnimation(index, actionAnim) {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
-        setTimeout(() => {
-            item?.classList.remove(`animated-${actionAnim}`)
-            if (actionAnim === 'delete') {
-                this.taskList.removeChild(this.taskList.children[index])
+        this.afterAnimationEnd(end => {
+            if (end) {
+                item?.classList.remove(`animated-${actionAnim}`)
+                if (actionAnim === 'delete') {
+                    this.taskList.removeChild(this.taskList.children[index])
+                }
             }
-        }, delay)
+        })
     }
 
     /**
@@ -219,6 +229,16 @@ export default class TaskReport {
     renderTasksList(tasks = []) {
         this.taskList.innerHTML = '';
         tasks.forEach(item => this.createTask(item))
+    }
+
+    /**
+     *
+     * @param e {KeyboardEvent}
+     */
+    keyDownHandler(e) {
+        if (!Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter' && this.input.value.length !== 0) {
+            this.addTask(e);
+        }
     }
 
     /**

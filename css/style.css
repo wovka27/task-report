@@ -43,8 +43,10 @@ ul li > span {
 }
 
 ul li p {
+    display: block;
     flex: 0 1 90%;
     padding: 3px;
+    text-wrap: avoid;
 }
 
 body {
