@@ -26,6 +26,11 @@ class Message {
     deleteMessage() {
         this.element.style.display = 'none';
     }
+
+    /**
+     *
+     * @param text{string}
+     */
     showMessage(text) {
         this.element.style.display = 'flex';
         this.autoDeleteMessage();
@@ -34,7 +39,7 @@ class Message {
     }
     autoDeleteMessage() {
         setTimeout(() => {
-            document.body.removeChild(this.element)
+            this.deleteMessage()
         }, 3000);
     }
 }

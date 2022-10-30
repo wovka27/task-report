@@ -13,6 +13,11 @@ export const writeClipboard = async (val = '') => {
     await navigator.clipboard.writeText(val);
 }
 
+/**
+ * @param type {'filter'|'find'}
+ * @param cb {(item: {id: number, value: string}) => {id: number, value: string} | boolean}
+ * @returns {{result: Array<{id: number | string, value: string}>, tasks: Array<{id: number | string, value: string}>}}
+ */
 export const getChangeTask = (type, cb) => {
     const tasks = storage.get(TASK_REPORT);
     const result = tasks[type](item => cb(item))
@@ -20,6 +25,10 @@ export const getChangeTask = (type, cb) => {
     return {tasks, result}
 }
 
+/**
+ * @param value {{id: number | string, value: string}}
+ * @param render {(tasks: Array<{id: number | string, value: string}>) => void}
+ */
 export const setStorageTask = (value, render) => {
     storage.set(TASK_REPORT, [...new Set([...storage.get(TASK_REPORT) ?? [], value])]);
     render(storage.get(TASK_REPORT))
@@ -31,6 +40,12 @@ export const storage = {
     delete: (name) => localStorage.removeItem(name)
 }
 
+/**
+ *
+ * @param target {HTMLElement | Event}
+ * @param handlers {Array<(e: Event)=> void>}
+ * @param remove {boolean}
+ */
 export const setEventListeners = (target, handlers = [], remove = false) => {
     const eventNames = ['input', 'keydown', 'blur'];
     if (!remove) {

@@ -4,7 +4,6 @@ const form = document.forms[0];
 
 document.addEventListener('DOMContentLoaded', () => new TaskReport({
     form: {
-        element: form,
         input: form[0],
         addBtn: '#' + form[1].id,
         clearBtn: '#' + form[3].id,

@@ -12,9 +12,27 @@ import Message from "./Message.js";
 
 export default class TaskReport {
 
+    /**
+     *
+     * @param options{{
+     * form:{
+     *      input: HTMLInputElement,
+     *      addBtn: HTMLButtonElement,
+     *      clearBtn: HTMLButtonElement,
+     *      copyBtn: HTMLButtonElement,
+     * };
+     * taskList:{
+     *     element: HTMLElement | null,
+     *     taskItem: {
+     *         className: string,
+     *         deleteItemBtn: string,
+     *         taskValueItem: string
+     *     }
+     * }}
+     * }
+     */
     constructor(options = {}) {
         this.input = options.form.input;
-        this.form = options.form.element;
         this.addBtn = options.form.addBtn;
         this.copyBtn = options.form.copyBtn;
         this.clearBtn = options.form.clearBtn;
@@ -49,13 +67,14 @@ export default class TaskReport {
 
     get taskListEmpty() {
         const tasks = this.storageTasks()
-        if (!tasks || tasks.length === 0) {
-            return true;
-        } else {
-            return false
-        }
+        return !tasks || tasks.length === 0;
     }
 
+    /**
+     *
+     * @param e{Event}
+     * @returns {Promise<void>}
+     */
     async copy(e) {
         e.preventDefault();
         const tasks = this.storageTasks();
@@ -71,6 +90,10 @@ export default class TaskReport {
         }
     }
 
+    /**
+     *
+     * @param e{Event}
+     */
     deleteStorageTasks(e) {
         e.preventDefault();
         if (this.taskListEmpty) {
@@ -82,6 +105,10 @@ export default class TaskReport {
         this.message.showMessage('Очищено');
     }
 
+    /**
+     *
+     * @param e{Event}
+     */
     addTask(e) {
         e.preventDefault();
         if (!this.input.value || this.input.value === ' ') {
@@ -93,13 +120,21 @@ export default class TaskReport {
         this.input.value = null;
     }
 
+    /**
+     *
+     * @param e{Event}
+     */
     deleteItem(e) {
         const {result} = getChangeTask('filter', item => item.id !== +e.target.id)
         storage.set(TASK_REPORT, result)
-        const index = Array.from(this.taskList.children).findIndex(item => item.children[1].id === e.target.id)
+        const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
         this.controlAnimation(index, 'delete');
     }
 
+    /**
+     *
+     * @param e{Event}
+     */
     changeItem(e) {
         const {tasks, result} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
@@ -121,8 +156,15 @@ export default class TaskReport {
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 
+    /**
+     * Контроль за анимацией
+     *
+     * @param index{number}
+     * @param actionAnim{string}
+     * @param delay{number}
+     */
     controlAnimation(index, actionAnim, delay = 200) {
-        const item = this.taskList.children[index];
+        const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         setTimeout(() => {
             item?.classList.remove(`animated-${actionAnim}`)
@@ -132,6 +174,10 @@ export default class TaskReport {
         }, delay)
     }
 
+    /**
+     *
+     * @param item{{value: string; id: number | string} | null}
+     */
     createTask(item) {
         if (!item) {
             return;
@@ -151,11 +197,20 @@ export default class TaskReport {
         this.taskList.appendChild(li);
     }
 
+    /**
+     *
+     * @param tasks {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
+     */
     renderTasksList(tasks = []) {
         this.taskList.innerHTML = '';
         tasks.forEach(item => this.createTask(item))
     }
 
+    /**
+     *
+     * @param e{Event}
+     * @returns {Promise<void>}
+     */
     async clickHandler(e) {
         switch (e.target) {
             case e.target.closest(this.deleteItemBtn):
