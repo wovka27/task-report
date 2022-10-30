@@ -16,10 +16,11 @@ export default class TaskReport {
      *
      * @param options{{
      * form:{
+     *      element: HTMLFormElement,
      *      input: HTMLInputElement,
-     *      addBtn: HTMLButtonElement,
-     *      clearBtn: HTMLButtonElement,
-     *      copyBtn: HTMLButtonElement,
+     *      addBtn: string,
+     *      clearBtn: string,
+     *      copyBtn: string,
      * };
      * taskList:{
      *     element: HTMLElement | null,
@@ -32,6 +33,7 @@ export default class TaskReport {
      * }
      */
     constructor(options = {}) {
+        this.form = options.form.element;
         this.input = options.form.input;
         this.addBtn = options.form.addBtn;
         this.copyBtn = options.form.copyBtn;
@@ -52,6 +54,7 @@ export default class TaskReport {
         this.createTask = this.createTask.bind(this)
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
+        this.keyDownHandler = this.keyDownHandler.bind(this);
 
         const tasks = this.storageTasks()
         this.input.value = null;
@@ -59,6 +62,17 @@ export default class TaskReport {
             this.renderTasksList(tasks)
         }
         document.body.addEventListener('click', this.clickHandler.bind(this))
+        document.body.addEventListener('keydown', this.keyDownHandler)
+    }
+
+    /**
+     *
+     * @param e {KeyboardEvent}
+     */
+    keyDownHandler(e) {
+        if (e.code === 'Enter' && this.input.value.length !== 0) {
+            this.addTask(e);
+        }
     }
 
     getStorageTasks() {
@@ -114,10 +128,10 @@ export default class TaskReport {
             return;
         }
         e.preventDefault();
-
         setStorageTask({id: Date.now(), value: this.input.value.trim()}, this.renderTasksList)
         this.controlAnimation(this.taskList.children.length - 1, 'add');
         this.input.value = null;
+        this.message.showMessage('Добавлено')
     }
 
     /**
@@ -138,7 +152,6 @@ export default class TaskReport {
     changeItem(e) {
         const {tasks, result} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
-        e.target.focus();
 
         const handler = (event) => {
             result.value = event.target.innerText;

@@ -6,9 +6,9 @@ class Message {
         this.showMessage = this.showMessage.bind(this);
         this.autoDeleteMessage = this.autoDeleteMessage.bind(this);
         this.deleteMessage = this.deleteMessage.bind(this);
-        this.createMessage()
-        this.closeBtn = this.element.children[0].children[1]
-        this.closeBtn.addEventListener('click', this.deleteMessage)
+        this.createMessage();
+        this.closeBtn = this.element.children[0].children[1];
+        this.closeBtn.addEventListener('click', this.deleteMessage);
     }
 
     createMessage() {
@@ -34,7 +34,7 @@ class Message {
     showMessage(text) {
         this.element.style.display = 'flex';
         this.autoDeleteMessage();
-        document.body.appendChild(this.element)
+        document.body.appendChild(this.element);
         this.element.children[0].children[0].textContent = text;
     }
     autoDeleteMessage() {
