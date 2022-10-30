@@ -110,10 +110,10 @@ export default class TaskReport {
      * @param e{Event}
      */
     addTask(e) {
-        e.preventDefault();
         if (!this.input.value || this.input.value === ' ') {
             return;
         }
+        e.preventDefault();
 
         setStorageTask({id: Date.now(), value: this.input.value.trim()}, this.renderTasksList)
         this.controlAnimation(this.taskList.children.length - 1, 'add');
@@ -189,9 +189,11 @@ export default class TaskReport {
         li.className = this.taskItem
         i.classList.add(this.taskValueItem.replace('.', ''))
         i.setAttribute('data-content', item.id);
+        i.title = 'Нажмите для изменения'
         i.textContent = item.value;
         span.classList.add(this.deleteItemBtn.replace('.', ''))
         span.textContent = 'X';
+        span.title = 'Удалить'
         span.id = item.id;
         [i, span].forEach(item => li.appendChild(item))
         this.taskList.appendChild(li);

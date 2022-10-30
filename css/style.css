@@ -88,6 +88,10 @@ button, textarea {
     border-radius: 5px;
 }
 
+.form__field textarea:invalid:required:focus {
+    box-shadow: 0 0 1px 1px #910000;
+}
+
 #task {
     padding-left: 10px;
 }
