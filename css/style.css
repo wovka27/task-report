@@ -42,7 +42,7 @@ ul li > span {
     margin-left: 5px;
 }
 
-ul li i {
+ul li p {
     flex: 0 1 90%;
     padding: 3px;
 }

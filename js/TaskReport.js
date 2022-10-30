@@ -154,7 +154,7 @@ export default class TaskReport {
         e.target.contentEditable = true
 
         const handler = (event) => {
-            result.value = event.target.innerText;
+            result.value = event.target.innerText.includes('\n') ? `<p>${event.target.innerText}</p>` : event.target.innerText;
         }
         const blur = () => {
             const items = [...new Set([...tasks, result])]
@@ -197,7 +197,7 @@ export default class TaskReport {
         }
 
         const li = document.createElement('li');
-        const i = document.createElement('i');
+        const i = document.createElement('p');
         const span = document.createElement('span');
         li.className = this.taskItem
         i.classList.add(this.taskValueItem.replace('.', ''))
