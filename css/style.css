@@ -34,6 +34,11 @@ ul li > span {
     height: 30px;
     border-radius: 5px;
     display: flex;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
     background-color: #fff8;
     justify-content: center;
     align-items: center;

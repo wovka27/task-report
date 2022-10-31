@@ -1,6 +1,7 @@
 
 class Message {
     constructor() {
+        this.timer = null;
         this.element = document.createElement('div');
         this.createMessage = this.createMessage.bind(this);
         this.showMessage = this.showMessage.bind(this);
@@ -20,9 +21,10 @@ class Message {
         i.className = 'message__content';
         span.className = 'message__close';
         span.textContent = 'X';
-        [i,span].forEach(item => innerWrapper.appendChild(item));
+        [i, span].forEach(item => innerWrapper.appendChild(item));
         this.element.append(innerWrapper);
     }
+
     deleteMessage() {
         this.element.style.display = 'none';
     }
@@ -37,10 +39,10 @@ class Message {
         document.body.appendChild(this.element);
         this.element.children[0].children[0].textContent = text;
     }
+
     autoDeleteMessage() {
-        setTimeout(() => {
-            this.deleteMessage()
-        }, 3000);
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => this.deleteMessage(), 3000)
     }
 }
 
