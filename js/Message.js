@@ -40,9 +40,9 @@ class Message {
         this.element.children[0].children[0].textContent = text;
     }
 
-    autoDeleteMessage() {
+    autoDeleteMessage(ms = 3000) {
         clearTimeout(this.timer)
-        this.timer = setTimeout(() => this.deleteMessage(), 3000)
+        this.timer = setTimeout(() => this.deleteMessage(), ms)
     }
 }
 
