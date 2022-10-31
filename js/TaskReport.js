@@ -2,7 +2,7 @@ import {
     afterAnimationEnd,
     DAY_WEEK,
     getChangeTask,
-    getValues,
+    getValues, noDuplicate,
     setEventListeners,
     setStorageTask,
     storage,
@@ -15,7 +15,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param options{{
+     * @param options {{
      * form:{
      *      element: HTMLFormElement,
      *      input: HTMLInputElement,
@@ -142,9 +142,9 @@ export default class TaskReport {
             result.value = event.target.innerText
         }
         const blur = () => {
-            const items = [...new Set([...tasks, result])]
+            const items = noDuplicate([...tasks, result])
             setResult(items);
-            this.renderTasksList(items)
+            this.renderTasksList(items);
             setEventListeners(e.target, [handler, keyDown, blur], true)
             e.target.contentEditable = false;
             this.message.showMessage('Изменено');

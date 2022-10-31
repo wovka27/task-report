@@ -30,11 +30,18 @@ export const getChangeTask = (type, cb) => {
 }
 
 /**
+ *
+ * @param value {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
+ * @returns {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
+ */
+export const noDuplicate = (value) => [...new Set(value)]
+
+/**
  * @param value {{id: number | string, value: string}}
  * @param render {(tasks: Array<{id: number | string, value: string}>) => void}
  */
 export const setStorageTask = (value, render) => {
-    storage.set(TASK_REPORT, [...new Set([...storage.get(TASK_REPORT) ?? [], value])]);
+    storage.set(TASK_REPORT, noDuplicate([...storage.get(TASK_REPORT) ?? [], value]));
     render(storage.get(TASK_REPORT))
 }
 

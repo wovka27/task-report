@@ -1,0 +1,21 @@
+{
+  "name": "task-report",
+  "version": "1.0.0",
+  "description": "TODO Task List",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wovka27/task-report.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wovka27/task-report/issues"
+  },
+  "homepage": "https://github.com/wovka27/task-report#readme"
+}
