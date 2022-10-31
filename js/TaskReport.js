@@ -45,7 +45,6 @@ export default class TaskReport {
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
 
         this.message = new Message();
-        this.animation = {event: '', value: false}
 
         this.addTask = this.addTask.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
@@ -125,8 +124,8 @@ export default class TaskReport {
      * @param e{Event}
      */
     deleteItem(e) {
-        const { result } = getChangeTask('filter', item => item.id !== +e.target.id)
-        storage.set(TASK_REPORT, result)
+        const { setResult } = getChangeTask('filter', item => item.id !== +e.target.id)
+        setResult();
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
         this.controlAnimation(index, 'delete');
     }
@@ -136,7 +135,7 @@ export default class TaskReport {
      * @param e{Event}
      */
     changeItem(e) {
-        const {tasks, result} = getChangeTask('find', item => item.id === +e.target.dataset.content)
+        const {tasks, result, setResult} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
 
         const handler = (event) => {
@@ -144,7 +143,7 @@ export default class TaskReport {
         }
         const blur = () => {
             const items = [...new Set([...tasks, result])]
-            storage.set(TASK_REPORT, items)
+            setResult(items);
             this.renderTasksList(items)
             setEventListeners(e.target, [handler, keyDown, blur], true)
             e.target.contentEditable = false;

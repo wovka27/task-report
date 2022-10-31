@@ -16,13 +16,17 @@ export const writeClipboard = async (val = '') => {
 /**
  * @param type {'filter'|'find'}
  * @param cb {(item: {id: number, value: string}) => {id: number, value: string} | boolean}
- * @returns {{result: Array<{id: number | string, value: string}>, tasks: Array<{id: number | string, value: string}>}}
+ * @returns {{
+ *      result: Array<{id: number | string, value: string}>,
+ *      tasks: Array<{id: number | string, value: string}>,
+ *      setResult: (d?:Array<{id: number | string, value: string}>) => void
+ *      }}
  */
 export const getChangeTask = (type, cb) => {
     const {data: tasks} = useStorage()
     const result = tasks[type](item => cb(item))
-
-    return {tasks, result}
+    const setResult = (data = result) => storage.set(TASK_REPORT, data)
+    return {tasks, result, setResult}
 }
 
 /**
