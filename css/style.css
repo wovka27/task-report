@@ -52,6 +52,7 @@ ul li p {
     flex: 0 1 90%;
     padding: 3px;
     text-wrap: avoid;
+    cursor: pointer;
 }
 
 body {

@@ -150,7 +150,7 @@ export default class TaskReport {
             this.message.showMessage('Изменено');
         }
 
-        const keyDown = (e) => e.code === 'Enter' && blur()
+        const keyDown = (e) => !Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter'  && blur()
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 

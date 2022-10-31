@@ -17,7 +17,7 @@ export const writeClipboard = async (val = '') => {
  * @param type {'filter'|'find'}
  * @param cb {(item: {id: number, value: string}) => {id: number, value: string} | boolean}
  * @returns {{
- *      result: Array<{id: number | string, value: string}>,
+ *      result: Array<{id: number | string, value: string}> | {id: number | string, value: string},
  *      tasks: Array<{id: number | string, value: string}>,
  *      setResult: (d?:Array<{id: number | string, value: string}>) => void
  *      }}
