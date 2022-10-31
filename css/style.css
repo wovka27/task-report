@@ -24,6 +24,7 @@ ul li {
     border: 1px solid;
     margin: 10px 0;
     border-radius: 5px;
+    gap: 20px;
 }
 ul li:focus-visible {
     outline: none;
@@ -44,14 +45,14 @@ ul li > span {
     align-items: center;
     font-weight: 700;
     cursor: pointer;
-    margin-left: 5px;
+    flex-shrink: 0;
 }
 
 ul li p {
     display: block;
     flex: 0 1 90%;
     padding: 3px;
-    text-wrap: avoid;
+    word-wrap: anywhere;
     cursor: pointer;
 }
 

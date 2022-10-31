@@ -137,11 +137,11 @@ export default class TaskReport {
     changeItem(e) {
         const {tasks, result, setResult} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
-
         const handler = (event) => {
-            result.value = event.target.innerText
+            result.value = event.target.innerText + '\n';
         }
-        const blur = () => {
+        const blur = (e) => {
+
             const items = noDuplicate([...tasks, result])
             setResult(items);
             this.renderTasksList(items);
@@ -150,7 +150,7 @@ export default class TaskReport {
             this.message.showMessage('Изменено');
         }
 
-        const keyDown = (e) => !Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter'  && blur()
+        const keyDown = (e) => !Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter'  && blur(e)
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 
