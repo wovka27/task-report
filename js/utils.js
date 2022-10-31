@@ -19,7 +19,7 @@ export const writeClipboard = async (val = '') => {
  * @returns {{result: Array<{id: number | string, value: string}>, tasks: Array<{id: number | string, value: string}>}}
  */
 export const getChangeTask = (type, cb) => {
-    const tasks = storage.get(TASK_REPORT);
+    const {data: tasks} = useStorage()
     const result = tasks[type](item => cb(item))
 
     return {tasks, result}
@@ -55,16 +55,30 @@ export const setEventListeners = (target, handlers = [], remove = false) => {
     }
 }
 
-// export const throttle = (callback, timeout = 1000) => {
-//     let timer = null
-//
-//     return ((...args) => {
-//         if (timer) return
-//
-//         timer = setTimeout(() => {
-//             callback(...args)
-//             clearTimeout(timer)
-//             timer = null
-//         }, timeout)
-//     })()
-// }
+/**
+ *
+ * @param name {string}
+ */
+export const useStorage =  (name= TASK_REPORT) => {
+    const data = storage.get(name);
+    const setData = (data) => storage.set(name, data)
+    const deleteData = () => storage.delete(name);
+
+    return {data, setData, deleteData}
+};
+
+/**
+ *
+ * @param cb {(animEnd: boolean) => void}
+ */
+export const afterAnimationEnd = (cb) => {
+    let flag = false;
+    const handler = (e) => {
+        if (e.returnValue) {
+            flag = !flag;
+            cb(flag);
+            document.removeEventListener('animationend', handler)
+        }
+    }
+    document.addEventListener('animationend', handler)
+}

@@ -1,11 +1,12 @@
 import {
+    afterAnimationEnd,
     DAY_WEEK,
     getChangeTask,
     getValues,
     setEventListeners,
     setStorageTask,
     storage,
-    TASK_REPORT,
+    TASK_REPORT, useStorage,
     writeClipboard
 } from './utils.js'
 import Message from "./Message.js";
@@ -43,7 +44,6 @@ export default class TaskReport {
         this.deleteItemBtn = options.taskList.taskItem.deleteItemBtn;
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
 
-        this.storageTasks = this.getStorageTasks;
         this.message = new Message();
         this.animation = {event: '', value: false}
 
@@ -57,38 +57,18 @@ export default class TaskReport {
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
         this.keyDownHandler = this.keyDownHandler.bind(this);
 
-        const tasks = this.storageTasks()
+        const {data} = useStorage();
         this.input.value = null;
-        if (tasks) {
-            this.renderTasksList(tasks)
+        if (data) {
+            this.renderTasksList(data)
         }
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
     }
 
-    getStorageTasks() {
-        return storage.get(TASK_REPORT);
-    }
-
     get taskListEmpty() {
-        const tasks = this.storageTasks()
-        return !tasks || tasks.length === 0;
-    }
-
-    /**
-     *
-     * @param cb {(animEnd: boolean) => void}
-     */
-    afterAnimationEnd(cb) {
-        let flag = false;
-        const handler = (e) => {
-            if (e.returnValue) {
-                flag = !flag;
-                cb(flag);
-                document.removeEventListener('animationend', handler)
-            }
-        }
-        document.addEventListener('animationend', handler)
+        const {data} = useStorage();
+        return !data || data.length === 0;
     }
 
     /**
@@ -98,13 +78,13 @@ export default class TaskReport {
      */
     async copy(e) {
         e.preventDefault();
-        const tasks = this.storageTasks();
-        if (!tasks || tasks.length === 0) {
+        const {data} = useStorage();
+        if (!data || data.length === 0) {
             this.message.showMessage('Не удалось скопировать. Список пуст.');
             return;
         }
         try {
-            await writeClipboard(`${DAY_WEEK}:\n${getValues(tasks, (item) => ` - ${item.value}\n`)}`)
+            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${item.value}\n`)}`)
             this.message.showMessage('Успешно скопировано');
         } catch (e) {
             this.message.showMessage('Не удалось скопировать');
@@ -138,7 +118,6 @@ export default class TaskReport {
         setStorageTask({id: Date.now(), value: this.input.value}, this.renderTasksList)
         this.controlAnimation(this.taskList.children.length - 1, 'add');
         this.input.value = null;
-        this.message.showMessage('Добавлено')
     }
 
     /**
@@ -146,7 +125,7 @@ export default class TaskReport {
      * @param e{Event}
      */
     deleteItem(e) {
-        const {result} = getChangeTask('filter', item => item.id !== +e.target.id)
+        const { result } = getChangeTask('filter', item => item.id !== +e.target.id)
         storage.set(TASK_REPORT, result)
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
         this.controlAnimation(index, 'delete');
@@ -161,9 +140,7 @@ export default class TaskReport {
         e.target.contentEditable = true
 
         const handler = (event) => {
-            result.value = event.target.innerText.includes('\n')
-                ? event.target.innerText.split('\n').map(i => `<p>${i}</p>`).join('')
-                : event.target.innerText;
+            result.value = event.target.innerText
         }
         const blur = () => {
             const items = [...new Set([...tasks, result])]
@@ -187,7 +164,7 @@ export default class TaskReport {
     controlAnimation(index, actionAnim) {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
-        this.afterAnimationEnd(end => {
+        afterAnimationEnd(end => {
             if (end) {
                 item?.classList.remove(`animated-${actionAnim}`)
                 if (actionAnim === 'delete') {
