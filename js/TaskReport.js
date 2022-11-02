@@ -209,7 +209,7 @@ export default class TaskReport {
 
         if (tasks === null || tasks.length === 0) {
             this.taskList.classList.add('empty');
-            this.taskList.innerHTML = '<p>Список пуст.</p>';
+            this.taskList.innerHTML = '<p>Пусто...</p>';
             return
         }
         tasks.forEach(item => this.createTask(item));
