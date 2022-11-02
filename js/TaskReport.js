@@ -144,7 +144,7 @@ export default class TaskReport {
         const {tasks, result, setResult} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
         const handler = (event) => {
-            result.value = event.target.innerText + '\n';
+            result.value = event.target.innerText;
         }
         const blur = (e) => {
 
