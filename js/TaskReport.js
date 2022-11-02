@@ -98,8 +98,11 @@ export default class TaskReport {
             this.message.showMessage('Список пуст')
             return;
         }
+        Array.from(this.taskList?.children).forEach((_, index) => {
+            this.controlAnimation(index, 'delete');
+        });
         storage.delete(TASK_REPORT);
-        this.renderTasksList(storage.get(TASK_REPORT));
+        afterAnimationEnd(end => end && this.renderTasksList(storage.get(TASK_REPORT)));
         this.message.showMessage('Очищено');
     }
 
@@ -125,7 +128,11 @@ export default class TaskReport {
         const { setResult, result } = getChangeTask('filter', item => item.id !== +e.target.id)
         setResult();
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
-        this.controlAnimation(index, 'delete');
+        this.controlAnimation(
+            index,
+            'delete',
+            (item, actionAnim) => actionAnim === 'delete' && this.taskList.removeChild(item)
+        );
         afterAnimationEnd(end => end && this.renderTasksList(result));
     }
 
@@ -158,16 +165,15 @@ export default class TaskReport {
      *
      * @param index{number}
      * @param actionAnim{string}
+     * @param cb {(item: HTMLElement, actionAnim: string) => unknown | null}
      */
-    controlAnimation(index, actionAnim) {
+    controlAnimation(index, actionAnim,cb = null) {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         afterAnimationEnd(end => {
             if (end) {
                 item?.classList.remove(`animated-${actionAnim}`)
-                if (actionAnim === 'delete') {
-                    this.taskList.removeChild(this.taskList.children[index])
-                }
+                cb?.(item, actionAnim);
             }
         })
     }
