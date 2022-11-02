@@ -58,9 +58,7 @@ export default class TaskReport {
 
         const {data} = useStorage();
         this.input.value = null;
-        if (data) {
-            this.renderTasksList(data)
-        }
+        this.renderTasksList(data)
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
     }
@@ -101,7 +99,7 @@ export default class TaskReport {
             return;
         }
         storage.delete(TASK_REPORT);
-        this.renderTasksList();
+        this.renderTasksList(storage.get(TASK_REPORT));
         this.message.showMessage('Очищено');
     }
 
