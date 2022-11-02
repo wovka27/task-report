@@ -123,11 +123,12 @@ export default class TaskReport {
      *
      * @param e{Event}
      */
-    deleteItem(e) {
-        const { setResult } = getChangeTask('filter', item => item.id !== +e.target.id)
+   deleteItem(e) {
+        const { setResult, result } = getChangeTask('filter', item => item.id !== +e.target.id)
         setResult();
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
         this.controlAnimation(index, 'delete');
+        afterAnimationEnd(end => end && this.renderTasksList(result));
     }
 
     /**
@@ -202,8 +203,15 @@ export default class TaskReport {
      *
      * @param tasks {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
      */
-    renderTasksList(tasks = []) {
+    renderTasksList(tasks) {
         this.taskList.innerHTML = '';
+        this.taskList.classList.remove('empty');
+
+        if (tasks === null || tasks.length === 0) {
+            this.taskList.classList.add('empty');
+            this.taskList.innerHTML = '<p>Список пуст.</p>'
+            return
+        }
         tasks.forEach(item => this.createTask(item))
     }
 

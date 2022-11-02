@@ -11,6 +11,11 @@ ul {
     overflow-y: auto;
     height: 100%;
 }
+ul.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 ul::-webkit-scrollbar {
     width: 0;
