@@ -2,7 +2,7 @@
 class Message {
     constructor() {
         this.timer = null;
-        this.element = document.createElement('div');
+        this.element = document.createElement('div')
         this.createMessage = this.createMessage.bind(this);
         this.showMessage = this.showMessage.bind(this);
         this.autoDeleteMessage = this.autoDeleteMessage.bind(this);

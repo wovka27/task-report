@@ -1,12 +1,16 @@
 import {
     afterAnimationEnd,
+    ARCHIVE_LISTS,
+    date,
     DAY_WEEK,
     getChangeTask,
-    getValues, noDuplicate,
+    getValues,
+    noDuplicate,
     setEventListeners,
     setStorageTask,
     storage,
-    TASK_REPORT, useStorage,
+    TASK_REPORT,
+    useStorage,
     writeClipboard
 } from './utils.js'
 import Message from "./Message.js";
@@ -43,6 +47,7 @@ export default class TaskReport {
         this.taskItem = options.taskList.taskItem.className;
         this.deleteItemBtn = options.taskList.taskItem.deleteItemBtn;
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
+        this.archive = document.getElementsByClassName('archive-lists')[0];
 
         this.message = new Message();
 
@@ -55,10 +60,13 @@ export default class TaskReport {
         this.renderTasksList = this.renderTasksList.bind(this);
         this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
         this.keyDownHandler = this.keyDownHandler.bind(this);
+        this.renderArchive = this.renderArchive.bind(this);
+        this.viewArchiveTasks = this.viewArchiveTasks.bind(this);
 
         const {data} = useStorage();
         this.input.value = null;
         this.renderTasksList(data)
+        this.renderArchive();
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
     }
@@ -81,10 +89,12 @@ export default class TaskReport {
             return;
         }
         try {
-            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${item.value}\n`)}`)
+            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${item.value}\n`)}`);
+            await this.saveTasksListToArchive(data);
+            await this.renderArchive();
             this.message.showMessage('Успешно скопировано');
         } catch (e) {
-            this.message.showMessage('Не удалось скопировать');
+            this.message.showMessage(`Не удалось скопировать, ${e}`);
         }
     }
 
@@ -124,8 +134,8 @@ export default class TaskReport {
      *
      * @param e{Event}
      */
-   deleteItem(e) {
-        const { setResult, result } = getChangeTask('filter', item => item.id !== +e.target.id)
+    deleteItem(e) {
+        const {setResult, result} = getChangeTask('filter', item => item.id !== +e.target.id)
         setResult();
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
         this.controlAnimation(
@@ -156,7 +166,7 @@ export default class TaskReport {
             this.message.showMessage('Изменено');
         }
 
-        const keyDown = (e) => !Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter'  && blur(e)
+        const keyDown = (e) => !Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter' && blur(e)
         setEventListeners(e.target, [handler, keyDown, blur])
     }
 
@@ -167,7 +177,7 @@ export default class TaskReport {
      * @param actionAnim{string}
      * @param cb {(item: HTMLElement, actionAnim: string) => unknown | null}
      */
-    controlAnimation(index, actionAnim,cb = null) {
+    controlAnimation(index, actionAnim, cb = null) {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         afterAnimationEnd(end => {
@@ -229,6 +239,48 @@ export default class TaskReport {
         }
     }
 
+    saveTasksListToArchive(tasks) {
+        const {setData, data} = useStorage(ARCHIVE_LISTS);
+        const todayArchive = data?.find(item => item.today === date.today);
+        if (!todayArchive) {
+            setData(noDuplicate([...data ?? [], {...date, tasks}]))
+        } else {
+            setData(noDuplicate([...data.filter(i => i.today !== date.today) ?? [], {...date, tasks}]))
+        }
+    }
+
+    renderArchive() {
+        const {data} = useStorage(ARCHIVE_LISTS);
+        if (!data || !data.length) {
+            return;
+        }
+        this.archive.innerHTML = data.map(item => `
+            <li class="archive-lists__list archive-target" data-tasks=${JSON.stringify(item.tasks)}>
+                <p class="archive-lists__list-date archive-target" data-tasks=${JSON.stringify(item.tasks)}>${item.today}</p>
+                <p class="archive-lists__list-content archive-target" data-tasks=${JSON.stringify(item.tasks)}>${item.tasks[0].value}</p>
+            </li>`
+        ).join('');
+    }
+
+    viewArchiveTasks(e) {
+        const {setData} = useStorage()
+        const tasks = JSON.parse(e.target.dataset.tasks);
+        setData(tasks);
+        this.taskList.innerHTML = '';
+        this.taskList.classList.remove('empty');
+
+        if (tasks === null || tasks.length === 0) {
+            this.taskList.classList.add('empty');
+            this.taskList.innerHTML = '<p>Пусто...</p>';
+            return
+        }
+        tasks.forEach((item, index) => {
+            this.createTask(item)
+            this.controlAnimation(index, 'add');
+        });
+    }
+
+
     /**
      *
      * @param e{Event}
@@ -250,6 +302,9 @@ export default class TaskReport {
                 break;
             case e.target.closest(this.copyBtn):
                 await this.copy(e);
+                break;
+            case e.target.closest('.archive-target'):
+                this.viewArchiveTasks(e);
                 break;
             default:
                 return;

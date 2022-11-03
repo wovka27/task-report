@@ -1,8 +1,7 @@
 import TaskReport from '../js/TaskReport.js';
 
 const form = document.forms[0];
-
-document.addEventListener('DOMContentLoaded', () => new TaskReport({
+export const taskReport = new TaskReport({
     form: {
         element: form,
         input: form[0],
@@ -18,4 +17,4 @@ document.addEventListener('DOMContentLoaded', () => new TaskReport({
             taskValueItem: '.result-task-list__item-content',
         },
     },
-}));
+});

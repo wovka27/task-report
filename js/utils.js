@@ -1,8 +1,16 @@
-const getDayWeek = () => ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
+export const date = {
+    get dayWeek() {
+        return ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
+    },
+    get today() {
+        return new Date().toISOString().slice(0, 10).split('-').reverse().join('.')
+    }
+}
 
-export const DAY_WEEK = getDayWeek();
+export const DAY_WEEK = date.dayWeek;
 
 export const TASK_REPORT = 'tasks-report';
+export const ARCHIVE_LISTS = 'archive-lists';
 
 export const getValues = (items, valCb) => items?.map((item) => valCb(item)).join('');
 
@@ -93,3 +101,4 @@ export const afterAnimationEnd = (cb) => {
     }
     document.addEventListener('animationend', handler)
 }
+

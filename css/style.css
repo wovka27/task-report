@@ -11,6 +11,44 @@ ul {
     overflow-y: auto;
     height: 100%;
 }
+ul.archive-lists {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px 20px 20px 0;
+    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
+
+}
+
+ul li.archive-lists__list {
+    border-radius: 5px;
+    padding: 10px;
+    flex-shrink: 0;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #444;
+    max-width: 300px;
+    border-color: #fff8;
+    box-shadow: 0 0 10px 1px #c2c2c220;
+}
+
+ul li p.archive-lists__list-date {
+    color: #fff8;
+}
+
+ul li p.archive-lists__list-content {
+    height: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 ul.empty {
     display: flex;
     align-items: center;
@@ -19,6 +57,7 @@ ul.empty {
 
 ul::-webkit-scrollbar {
     width: 0;
+    height: 0;
 }
 
 ul li {
@@ -35,7 +74,7 @@ ul li:focus-visible {
     outline: none;
 }
 
-ul li > span {
+ul.result-task-list li > span {
     width: 30px;
     height: 30px;
     border-radius: 5px;
