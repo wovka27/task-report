@@ -126,7 +126,6 @@ export default class TaskReport {
         }
         e.preventDefault();
         setStorageTask({id: Date.now(), value: this.input.value}, this.renderTasksList)
-        this.controlAnimation(this.taskList.children.length - 1, 'add');
         this.input.value = null;
     }
 
@@ -206,7 +205,7 @@ export default class TaskReport {
         i.title = 'Нажмите для изменения'
         i.textContent = item.value;
         span.classList.add(this.deleteItemBtn.replace('.', ''))
-        span.textContent = 'X';
+        span.textContent = '✖';
         span.title = 'Удалить'
         span.id = item.id;
         [i, span].forEach(item => li.appendChild(item))
@@ -217,7 +216,7 @@ export default class TaskReport {
      *
      * @param tasks {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
      */
-    renderTasksList(tasks) {
+    renderTasksList(tasks, cb = () => null) {
         this.taskList.innerHTML = '';
         this.taskList.classList.remove('empty');
 
@@ -226,7 +225,10 @@ export default class TaskReport {
             this.taskList.innerHTML = '<p>Пусто...</p>';
             return
         }
-        tasks.forEach(item => this.createTask(item));
+        tasks.forEach((item, index) => {
+            this.createTask(item)
+            cb(index)
+        });
     }
 
     /**
@@ -263,21 +265,10 @@ export default class TaskReport {
     }
 
     viewArchiveTasks(e) {
-        const {setData} = useStorage()
+        const {setData} = useStorage();
         const tasks = JSON.parse(e.target.dataset.tasks);
         setData(tasks);
-        this.taskList.innerHTML = '';
-        this.taskList.classList.remove('empty');
-
-        if (tasks === null || tasks.length === 0) {
-            this.taskList.classList.add('empty');
-            this.taskList.innerHTML = '<p>Пусто...</p>';
-            return
-        }
-        tasks.forEach((item, index) => {
-            this.createTask(item)
-            this.controlAnimation(index, 'add');
-        });
+        this.renderTasksList(tasks, index => this.controlAnimation(index, 'add'));
     }
 
 
