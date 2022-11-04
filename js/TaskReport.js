@@ -204,9 +204,9 @@ export default class TaskReport {
         i.setAttribute('data-content', item.id);
         i.title = 'Нажмите для изменения'
         i.textContent = item.value;
-        span.classList.add(this.deleteItemBtn.replace('.', ''))
-        span.textContent = '✖';
-        span.title = 'Удалить'
+        span.classList.add(this.deleteItemBtn.replace('.', ''));
+        span.title = 'Удалить';
+        span.textContent = ''
         span.id = item.id;
         [i, span].forEach(item => li.appendChild(item))
         this.taskList.appendChild(li);
@@ -220,7 +220,7 @@ export default class TaskReport {
         this.taskList.innerHTML = '';
         this.taskList.classList.remove('empty');
 
-        if (tasks === null || tasks.length === 0) {
+        if (!Boolean(tasks) || tasks.length === 0) {
             this.taskList.classList.add('empty');
             this.taskList.innerHTML = '<p>Пусто...</p>';
             return
@@ -253,22 +253,23 @@ export default class TaskReport {
 
     renderArchive() {
         const {data} = useStorage(ARCHIVE_LISTS);
-        if (!data || !data.length) {
+        if (!Boolean(data)) {
             return;
         }
         this.archive.innerHTML = data.map(item => `
-            <li class="archive-lists__list archive-target" data-tasks=${JSON.stringify(item.tasks)}>
-                <p class="archive-lists__list-date archive-target" data-tasks=${JSON.stringify(item.tasks)}>${item.today}</p>
-                <p class="archive-lists__list-content archive-target" data-tasks=${JSON.stringify(item.tasks)}>${item.tasks[0].value}</p>
+            <li class="archive-lists__list archive-target" data-tasks="${item.today}">
+                <p class="archive-lists__list-date archive-target" data-tasks="${item.today}">${item.today}</p>
+                <p class="archive-lists__list-content archive-target" data-tasks="${item.today}">${item.tasks[0].value === ('' || '\n') ? '...' : item.tasks[0].value}</p>
             </li>`
         ).join('');
     }
 
     viewArchiveTasks(e) {
-        const {setData} = useStorage();
-        const tasks = JSON.parse(e.target.dataset.tasks);
-        setData(tasks);
-        this.renderTasksList(tasks, index => this.controlAnimation(index, 'add'));
+        const {setData} = useStorage()
+        const {data} = useStorage(ARCHIVE_LISTS);
+        const filterData = data.filter(item => item.today === e.target.dataset.tasks)[0];
+        setData(filterData.tasks);
+        this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
     }
 
 

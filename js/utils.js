@@ -55,7 +55,7 @@ export const setStorageTask = (value, render) => {
 
 export const storage = {
     get: (name) => JSON.parse(localStorage.getItem(name)),
-    set: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
+    set: (name, value) => value && localStorage.setItem(name, JSON.stringify(value)),
     delete: (name) => localStorage.removeItem(name)
 }
 

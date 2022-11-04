@@ -84,12 +84,9 @@ ul.result-task-list li > span {
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
-    background-color: #fff2;
+    background-color: #444;
+    border: 1px solid #fffa;
     color: #fff8;
-    justify-content: center;
-    align-items: center;
-    font-weight: 700;
-    text-align: center;
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -179,6 +176,28 @@ button {
     width: 100%;
     max-width: 600px;
 }
+
+.result-task-list__item-close {
+    position: relative;
+}
+.result-task-list__item-close::after, .result-task-list__item-close::before {
+    content: ' ';
+    position: absolute;
+    top: 12px;
+    left: 7px;
+    background-color: #fffa;
+    display: block;
+    height: 3px;
+    width: 15px;
+}
+
+.result-task-list__item-close::before {
+    transform: rotate(45deg);
+}
+.result-task-list__item-close::after {
+    transform: rotate(-45deg);
+}
+
 ul li.animated-add {
     animation: add .3s 1 ease-in-out;
 }
