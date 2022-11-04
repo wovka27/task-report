@@ -219,14 +219,7 @@ export default class TaskReport {
      */
     renderTasksList(tasks, cb = () => null) {
         this.taskList.innerHTML = '';
-        this.taskList.classList.remove('empty');
-
-        if (!Boolean(tasks) || tasks.length === 0) {
-            this.taskList.classList.add('empty');
-            this.taskList.innerHTML = '<p>Пусто...</p>';
-            return
-        }
-        tasks.forEach((item, index) => {
+        tasks?.forEach((item, index) => {
             this.createTask(item)
             cb(index)
         });

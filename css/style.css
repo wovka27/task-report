@@ -18,7 +18,6 @@ ul.archive-lists {
     gap: 20px;
     width: 100%;
     max-width: 600px;
-    padding: 20px 20px 20px 0;
     overflow: hidden;
     overflow-y: hidden;
     overflow-x: auto;
@@ -51,12 +50,6 @@ ul li p.archive-lists__list-content {
     height: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-ul.empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 ul::-webkit-scrollbar {
@@ -104,8 +97,7 @@ ul li p {
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
+    height: 100%;
     position: relative;
 }
 
@@ -115,7 +107,7 @@ button, textarea {
 }
 
 .container {
-    padding: 20px 20px 100px 20px;
+    padding: 20px 20px 0;
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -173,15 +165,23 @@ button {
     padding: 10px;
     border-radius: 5px;
     margin: 0 auto;
+    display: flex;
     max-width: 600px;
     width: 100%;
 }
 
 .result {
     height: 100%;
-    display: flex;
     flex-direction: column;
-    min-height: 300px;
+    min-height: 100px;
+    max-width: 600px;
+    max-height: 350px;
+}
+
+@media (max-width: 500px) {
+    .result {
+        max-height: 250px;
+    }
 }
 
 .result-task-list__item-close {
@@ -298,8 +298,8 @@ body.light .slider {
     bottom: 4px;
     border: transparent;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: .2s;
+    transition: .2s;
 }
 
 body.dark .slider:before {
@@ -311,7 +311,6 @@ body.light .slider:before {
 
 
 .theme {
-    display: flex;
     gap: 20px;
     align-items: center;
 
