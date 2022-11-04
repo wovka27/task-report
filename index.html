@@ -6,9 +6,16 @@
   <title>TaskReport</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
+<body class="dark">
 <div class="container">
-  <div class="result">
+  <div class="layout-block theme">
+    <label id="switch" class="switch">
+      <input id="checkbox" type="checkbox" checked>
+      <span class="slider round"></span>
+    </label>
+    <div id="theme-status" class="theme__status">Темная тема</div>
+  </div>
+  <div class="result layout-block">
     <ul id="task-list" class="result-task-list"></ul>
   </div>
   <form name="form" class="form">

@@ -39,8 +39,12 @@ ul li.archive-lists__list {
     box-shadow: 0 0 10px 1px #c2c2c220;
 }
 
-ul li p.archive-lists__list-date {
+body.dark ul li p.archive-lists__list-date {
     color: #fff8;
+}
+
+body.light ul li p.archive-lists__list-date {
+    color: #0008;
 }
 
 ul li p.archive-lists__list-content {
@@ -165,16 +169,19 @@ button {
     cursor: pointer;
 }
 
-.result {
-    height: 100%;
+.layout-block {
     padding: 10px;
     border-radius: 5px;
+    margin: 0 auto;
+    max-width: 600px;
+    width: 100%;
+}
+
+.result {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
     min-height: 300px;
-    width: 100%;
-    max-width: 600px;
 }
 
 .result-task-list__item-close {
@@ -190,6 +197,16 @@ button {
     height: 3px;
     width: 15px;
 }
+
+body.dark .result-task-list__item-close::after,body.dark .result-task-list__item-close::before {
+    background-color: #fffa;
+}
+
+body.light .result-task-list__item-close::after,body.light .result-task-list__item-close::before {
+    background-color: #000a;
+}
+
+
 
 .result-task-list__item-close::before {
     transform: rotate(45deg);
@@ -239,6 +256,82 @@ ul li.animated-delete {
     animation: show .5s 1 ease-in-out;
 }
 
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid white;
+}
+
+body.dark .slider {
+    background-color: #444;
+    border-color: #fff;
+}
+
+body.light .slider {
+    background-color: #444;
+    border-color: #000;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    border: transparent;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+body.dark .slider:before {
+    background-color: #fff;
+}
+body.light .slider:before {
+    background-color: #444;
+}
+
+
+.theme {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
 @keyframes show {
     from {
         transform: translateY(200%);
@@ -284,24 +377,22 @@ ul li.animated-delete {
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    body, button, textarea, .message-inner-wrapper {
-        background: #333;
-        color: white;
-    }
-    .result, button, textarea, .message-inner-wrapper  {
-        background-color: #444;
-        box-shadow: 0 0 1px 1px #fff8;
-    }
+body.light {
+    background: #ffffff;
+    color: #000;
+}
+body.dark  {
+    background: #333;
+    color: white;
+}
+body.dark button,body.dark .slider,body.dark .layout-block,body.dark .result-task-list__item-close,body.dark li,body.dark #task,body.dark .message-inner-wrapper, body.dark .archive-lists__list  {
+    background-color: #444;
+    box-shadow: 0 0 1px 1px #fff8;
+    color: white;
 }
 
-@media (prefers-color-scheme: light) {
-    body, button, textarea, li, .message-inner-wrapper  {
-        background: #d7d7d7;
-        color: #000;
-    }
-    button, textarea, .result, .message-inner-wrapper   {
-        background-color: #afafaf;
-        box-shadow: 0 0 1px 1px #0008;
-    }
+body.light button,body.light .slider,body.light .layout-block, body.light .result-task-list__item-close, li, body.light #task, .message-inner-wrapper, body.light .archive-lists__list  {
+    background-color: #fff;
+    box-shadow: 0 0 1px 1px #0008;
+    color: #000;
 }

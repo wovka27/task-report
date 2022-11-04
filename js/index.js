@@ -1,7 +1,7 @@
 import TaskReport from '../js/TaskReport.js';
 
 const form = document.forms[0];
-export const taskReport = new TaskReport({
+new TaskReport({
     form: {
         element: form,
         input: form[0],
@@ -18,3 +18,20 @@ export const taskReport = new TaskReport({
         },
     },
 });
+
+const toggleBtn = document.getElementById('switch')
+
+toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const self = e.currentTarget;
+    const input = self.children[0]
+    const body = document.body;
+    const status = self.nextElementSibling;
+    if (input.checked) {
+        body.className = 'dark';
+        status.innerText = 'Темная тема'
+    } else {
+        body.className = 'light';
+        status.innerText = 'Светлая тема'
+    }
+})
