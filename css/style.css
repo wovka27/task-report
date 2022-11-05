@@ -24,6 +24,10 @@ ul.archive-lists {
 
 }
 
+#task {
+    height: 100px;
+}
+
 ul li.archive-lists__list {
     border-radius: 5px;
     padding: 10px;
@@ -178,9 +182,19 @@ button {
     max-height: 350px;
 }
 
-@media (max-width: 500px) {
+@media (max-height: 670px) {
     .result {
-        max-height: 250px;
+        height: 220px;
+    }
+
+}
+
+@media (max-height: 568px) {
+    .result {
+        height: 130px;
+    }
+    button {
+        padding: 5px!important;
     }
 }
 
