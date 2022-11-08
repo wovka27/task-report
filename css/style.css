@@ -45,6 +45,8 @@ ul li.archive-lists__list {
 ul li.archive-lists__list p:last-child {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
 }
 
 body.dark ul li p.archive-lists__list-date {
