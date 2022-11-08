@@ -14,7 +14,7 @@ ul {
 ul.archive-lists {
     margin: 0 auto;
     display: flex;
-    align-items: center;
+    align-items: start;
     gap: 20px;
     width: 100%;
     max-width: 600px;
@@ -36,6 +36,8 @@ ul li.archive-lists__list {
     cursor: pointer;
     flex-direction: column;
     gap: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     background-color: #444;
     max-width: 300px;
     border-color: #fff8;
