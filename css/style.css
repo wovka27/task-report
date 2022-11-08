@@ -36,12 +36,15 @@ ul li.archive-lists__list {
     cursor: pointer;
     flex-direction: column;
     gap: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
     background-color: #444;
     max-width: 300px;
     border-color: #fff8;
     box-shadow: 0 0 10px 1px #c2c2c220;
+}
+
+ul li.archive-lists__list p:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 body.dark ul li p.archive-lists__list-date {
