@@ -9,7 +9,16 @@
 ul {
     list-style-type: none;
     overflow-y: auto;
-    height: 100%;
+    height: 250px;
+}
+ul:empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+ul:empty:before {
+    content: 'Список пуст';
 }
 ul.archive-lists {
     margin: 0 auto;
@@ -201,7 +210,11 @@ button {
         height: 130px;
     }
     button {
-        padding: 5px!important;
+        padding: 5px;
+    }
+   ul li.archive-lists__list {
+       padding: 5px;
+       gap: 3px;
     }
 }
 

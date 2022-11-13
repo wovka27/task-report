@@ -62,7 +62,7 @@ export const storage = {
 /**
  *
  * @param target {HTMLElement | Event}
- * @param handlers {Array<(e: Event)=> void>}
+ * @param handlers {Array<(e: MouseEvent)=> void>}
  * @param remove {boolean}
  */
 export const setEventListeners = (target, handlers = [], remove = false) => {

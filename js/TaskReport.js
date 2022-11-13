@@ -78,7 +78,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      * @returns {Promise<void>}
      */
     async copy(e) {
@@ -100,7 +100,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      */
     deleteStorageTasks(e) {
         e.preventDefault();
@@ -118,7 +118,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      */
     addTask(e) {
         if (!this.input.value || this.input.value === ' ') {
@@ -132,7 +132,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      */
     deleteItem(e) {
         const {setResult, result} = getChangeTask('filter', item => item.id !== +e.target.id)
@@ -148,7 +148,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      */
     changeItem(e) {
         const {tasks, result, setResult} = getChangeTask('find', item => item.id === +e.target.dataset.content)
@@ -207,7 +207,7 @@ export default class TaskReport {
         i.textContent = item.value;
         span.classList.add(this.deleteItemBtn.replace('.', ''));
         span.title = 'Удалить';
-        span.textContent = ''
+        span.textContent = '';
         span.id = item.id;
         [i, span].forEach(item => li.appendChild(item))
         this.taskList.appendChild(li);
@@ -247,10 +247,7 @@ export default class TaskReport {
 
     renderArchive() {
         const {data} = useStorage(ARCHIVE_LISTS);
-        if (!Boolean(data)) {
-            return;
-        }
-        this.archive.innerHTML = data.map(item => `
+        this.archive.innerHTML = data?.map(item => `
             <li class="archive-lists__list archive-target" data-tasks="${item.today}">
                 <p class="archive-lists__list-date archive-target" data-tasks="${item.today}">${item.today}</p>
                 <p class="archive-lists__list-content archive-target" data-tasks="${item.today}">${item.tasks[0].value === ('' || '\n') ? '...' : item.tasks[0].value}</p>
@@ -269,7 +266,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e{Event}
+     * @param e{MouseEvent}
      * @returns {Promise<void>}
      */
     async clickHandler(e) {
