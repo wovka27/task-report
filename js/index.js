@@ -37,9 +37,9 @@ toggleBtn.addEventListener('click', (e) => {
 })
 
 const scrollArchive = () => {
-    let speed = 2; // Скорость скролла.
-    let scroll = document.querySelector('.archive-lists');
+    const scroll = document.querySelector('.archive-lists');
 
+    let speed = 1; // Скорость скролла.
     let left = 0; // отпустили мышку - сохраняем положение скролла
     let drag = false;
     let coorX = 0; // нажали мышку - сохраняем координаты.
@@ -59,6 +59,6 @@ const scrollArchive = () => {
     });
 }
 
-if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+if (!('ontouchstart' in window)) {
     scrollArchive();
 }
