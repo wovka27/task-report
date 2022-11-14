@@ -54,7 +54,7 @@ const scrollArchive = () => {
     });
     scroll.addEventListener('mousemove', function (e) {
         if (drag) {
-            this.scrollLeft = left + (e.pageX - this.offsetLeft - coorX) * speed;
+            this.scrollLeft = - (left + (e.pageX - this.offsetLeft - coorX) * speed);
         }
     });
 }
