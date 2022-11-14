@@ -127,6 +127,9 @@ export default class TaskReport {
         e.preventDefault();
         setStorageTask({id: Date.now(), value: this.input.value}, this.renderTasksList)
         this.controlAnimation(this.taskList.children.length - 1, 'add')
+        const {data} = useStorage()
+        this.saveTasksListToArchive(data);
+        this.renderArchive();
         this.input.value = null;
     }
 
