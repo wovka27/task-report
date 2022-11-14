@@ -38,7 +38,6 @@ toggleBtn.addEventListener('click', (e) => {
 
 const scrollArchive = () => {
     let speed = 2; // Скорость скролла.
-
     let scroll = document.querySelector('.archive-lists');
 
     let left = 0; // отпустили мышку - сохраняем положение скролла
@@ -60,4 +59,6 @@ const scrollArchive = () => {
     });
 }
 
-scrollArchive()
+if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+    scrollArchive();
+}
