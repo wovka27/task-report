@@ -35,4 +35,3 @@ toggleBtn.addEventListener('click', (e) => {
         status.innerText = 'Светлая тема'
     }
 })
-

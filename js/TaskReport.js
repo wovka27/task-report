@@ -5,7 +5,7 @@ import {
     DAY_WEEK,
     getChangeTask,
     getValues,
-    noDuplicate,
+    noDuplicate, scrollArchive,
     setEventListeners,
     setStorageTask,
     storage,
@@ -63,13 +63,12 @@ export default class TaskReport {
         this.keyDownHandler = this.keyDownHandler.bind(this);
         this.renderArchive = this.renderArchive.bind(this);
         this.viewArchiveTasks = this.viewArchiveTasks.bind(this);
-        this.scrollArchive = this.scrollArchive.bind(this);
 
         const {data} = useStorage();
         this.input.value = null;
         this.renderTasksList(data)
         this.renderArchive();
-        this.scrollArchive()
+        scrollArchive('.' + this.archive.className)
 
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
@@ -263,37 +262,14 @@ export default class TaskReport {
     }
 
     viewArchiveTasks(e) {
+        if (e.movementX !== 0) {
+            e.preventDefault()
+        }
         const {setData} = useStorage()
         const {data} = useStorage(ARCHIVE_LISTS);
         const filterData = data.filter(item => item.today === e.target.dataset.tasks)[0];
         setData(filterData.tasks);
         this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
-    }
-
-    scrollArchive() {
-        let speed = 1; // Скорость скролла.
-
-        const down = (e) => {
-            this.scroll.coorX = e.pageX - this.archive.offsetLeft;
-            this.archive.addEventListener('mousemove', move);
-            console.log(this.archive)
-        }
-
-        const up = () => {
-            this.scroll.pos = this.archive.scrollLeft;
-            this.archive.removeEventListener('mousemove', move);
-        }
-
-        const move = (e) => {
-            const data = - this.scroll.pos + (e.pageX - this.archive.offsetLeft - this.scroll.coorX) * speed
-            if (data <= 0) {
-                this.archive.scrollLeft = 0;
-            }
-            this.archive.scrollLeft = - data;
-        }
-
-        this.archive.addEventListener('mousedown',  down);
-        document.addEventListener('mouseup', up);
     }
 
 
