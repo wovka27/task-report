@@ -48,6 +48,7 @@ export default class TaskReport {
         this.deleteItemBtn = options.taskList.taskItem.deleteItemBtn;
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
         this.archive = document.getElementsByClassName('archive-lists')[0];
+        this.scroll = {pos: 0, coorX: 0};
 
         this.message = new Message();
 
@@ -62,11 +63,14 @@ export default class TaskReport {
         this.keyDownHandler = this.keyDownHandler.bind(this);
         this.renderArchive = this.renderArchive.bind(this);
         this.viewArchiveTasks = this.viewArchiveTasks.bind(this);
+        this.scrollArchive = this.scrollArchive.bind(this);
 
         const {data} = useStorage();
         this.input.value = null;
         this.renderTasksList(data)
         this.renderArchive();
+        this.scrollArchive()
+
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
     }
@@ -264,6 +268,32 @@ export default class TaskReport {
         const filterData = data.filter(item => item.today === e.target.dataset.tasks)[0];
         setData(filterData.tasks);
         this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
+    }
+
+    scrollArchive() {
+        let speed = 1; // Скорость скролла.
+
+        const down = (e) => {
+            this.scroll.coorX = e.pageX - this.archive.offsetLeft;
+            this.archive.addEventListener('mousemove', move);
+            console.log(this.archive)
+        }
+
+        const up = () => {
+            this.scroll.pos = this.archive.scrollLeft;
+            this.archive.removeEventListener('mousemove', move);
+        }
+
+        const move = (e) => {
+            const data = - this.scroll.pos + (e.pageX - this.archive.offsetLeft - this.scroll.coorX) * speed
+            if (data <= 0) {
+                this.archive.scrollLeft = 0;
+            }
+            this.archive.scrollLeft = - data;
+        }
+
+        this.archive.addEventListener('mousedown',  down);
+        document.addEventListener('mouseup', up);
     }
 
 
