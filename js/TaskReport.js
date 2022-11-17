@@ -257,19 +257,25 @@ export default class TaskReport {
             <li class="archive-lists__list archive-target" data-tasks="${item.today}">
                 <p class="archive-lists__list-date archive-target" data-tasks="${item.today}">${item.today}</p>
                 <p class="archive-lists__list-content archive-target" data-tasks="${item.today}">${item.tasks[0].value === ('' || '\n') ? '...' : item.tasks[0].value}</p>
+                <span class="archive-lists__list-close archive-delete" data-tasks="${item.today}"></span>
             </li>`
         ).join('');
     }
 
     viewArchiveTasks(e) {
-        if (e.movementX !== 0) {
-            e.preventDefault()
-        }
         const {setData} = useStorage()
         const {data} = useStorage(ARCHIVE_LISTS);
         const filterData = data.filter(item => item.today === e.target.dataset.tasks)[0];
         setData(filterData.tasks);
         this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
+    }
+
+    deleteArchive(e) {
+        e.stopPropagation();
+        const {data, setData} = useStorage(ARCHIVE_LISTS);
+        const filterData = data.filter(item => item.today !== e.target.dataset.tasks)
+        setData(filterData);
+        this.renderArchive();
     }
 
 
@@ -297,6 +303,9 @@ export default class TaskReport {
                 break;
             case e.target.closest('.archive-target'):
                 this.viewArchiveTasks(e);
+                break;
+            case e.target.closest('.archive-delete'):
+                this.deleteArchive(e);
                 break;
             default:
                 return;

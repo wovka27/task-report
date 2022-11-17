@@ -41,6 +41,7 @@ ul li.archive-lists__list {
     border-radius: 5px;
     padding: 10px;
     flex-shrink: 0;
+    position: relative;
     display: flex;
     cursor: pointer;
     flex-direction: column;
@@ -49,6 +50,31 @@ ul li.archive-lists__list {
     max-width: 300px;
     border-color: #fff8;
     box-shadow: 0 0 10px 1px #c2c2c220;
+}
+
+.archive-delete {
+    position: absolute;
+    top: 0;
+    display: block;
+    right: 0;
+    width: 40px;
+    height: 40px;
+}
+.archive-delete:before, .archive-delete:after {
+    position: absolute;
+    content: '';
+    width: 10px;
+    height: 1px;
+    background-color: #fff;
+    top: 15px;
+    right: 15px;
+}
+
+.archive-delete:before {
+    transform: rotate(45deg);
+}
+.archive-delete:after {
+    transform: rotate(-45deg);
 }
 
 ul li.archive-lists__list p:last-child {
