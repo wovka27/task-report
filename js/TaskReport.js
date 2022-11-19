@@ -38,7 +38,6 @@ export default class TaskReport {
      * }
      */
     constructor(options = {}) {
-        this.form = options.form.element;
         this.input = options.form.input;
         this.addBtn = options.form.addBtn;
         this.copyBtn = options.form.copyBtn;
@@ -48,7 +47,6 @@ export default class TaskReport {
         this.deleteItemBtn = options.taskList.taskItem.deleteItemBtn;
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
         this.archive = document.getElementsByClassName('archive-lists')[0];
-        this.scroll = {pos: 0, coorX: 0};
 
         this.message = new Message();
 
@@ -222,6 +220,7 @@ export default class TaskReport {
     /**
      *
      * @param tasks {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
+     * @param {function} [cb]
      */
     renderTasksList(tasks, cb = () => null) {
         this.taskList.innerHTML = '';
@@ -233,7 +232,7 @@ export default class TaskReport {
 
     /**
      *
-     * @param e {KeyboardEvent}
+     * @param e {KeyboardEvent | MouseEvent}
      */
     keyDownHandler(e) {
         if (!Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter' && this.input.value.length !== 0) {
@@ -265,7 +264,7 @@ export default class TaskReport {
     viewArchiveTasks(e) {
         const {setData} = useStorage()
         const {data} = useStorage(ARCHIVE_LISTS);
-        const filterData = data.filter(item => item.today === e.target.dataset.tasks)[0];
+        const filterData = data.find(item => item.today === e.target.dataset.tasks);
         setData(filterData.tasks);
         this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
     }
