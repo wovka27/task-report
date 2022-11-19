@@ -11,13 +11,13 @@ ul {
     overflow-y: auto;
     height: 250px;
 }
-ul:empty {
+ul.task-list:empty {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
 }
-ul:empty:before {
+ul.task-list:empty:before {
     content: 'Список пуст';
 }
 ul.archive-lists {
