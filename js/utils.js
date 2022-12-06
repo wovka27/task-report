@@ -128,3 +128,15 @@ export const scrollArchive = (selector) => {
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
 }
+
+/**
+ *
+ * @param {string} text
+ * @return {string}
+ */
+export const textDivider = (text) => {
+    const textArr = text.split(' ');
+    const startArgs = textArr.findIndex(item => item.match(/:+$/));
+    const textArgs = startArgs !== -1 && textArr.slice(startArgs + 1, textArr.length).map(item =>`   - ${item}`).join('\n');
+    return textArgs ? `${textArr.slice(0, startArgs + 1).join('')}\n${textArgs}` : text;
+}

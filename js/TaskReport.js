@@ -9,7 +9,7 @@ import {
     setEventListeners,
     setStorageTask,
     storage,
-    TASK_REPORT,
+    TASK_REPORT, textDivider,
     useStorage,
     writeClipboard
 } from './utils.js'
@@ -50,14 +50,13 @@ export default class TaskReport {
 
         this.message = new Message();
 
-        this.addTask = this.addTask.bind(this);
+        this.addTask = this.addTask.bind(this)
         this.deleteItem = this.deleteItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
         this.changeItem = this.changeItem.bind(this);
         this.controlAnimation = this.controlAnimation.bind(this);
         this.createTask = this.createTask.bind(this)
         this.renderTasksList = this.renderTasksList.bind(this);
-        this.deleteStorageTasks = this.deleteStorageTasks.bind(this);
         this.keyDownHandler = this.keyDownHandler.bind(this);
         this.renderArchive = this.renderArchive.bind(this);
         this.viewArchiveTasks = this.viewArchiveTasks.bind(this);
@@ -83,19 +82,20 @@ export default class TaskReport {
      * @returns {Promise<void>}
      */
     async copy(e) {
+        let self = this;
         e.preventDefault();
         const {data} = useStorage();
         if (!data || data.length === 0) {
-            this.message.showMessage('Не удалось скопировать. Список пуст.');
+            self.message.showMessage('Не удалось скопировать. Список пуст.');
             return;
         }
         try {
-            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${item.value}\n`)}`);
-            await this.saveTasksListToArchive(data);
-            await this.renderArchive();
-            this.message.showMessage('Успешно скопировано');
+            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${textDivider(item.value)}\n`)}`);
+            await self.saveTasksListToArchive(data);
+            await self.renderArchive();
+            self.message.showMessage('Успешно скопировано');
         } catch (e) {
-            this.message.showMessage(`Не удалось скопировать, ${e}`);
+            self.message.showMessage(`Не удалось скопировать, ${e}`);
         }
     }
 
@@ -122,6 +122,7 @@ export default class TaskReport {
      * @param e{MouseEvent}
      */
     addTask(e) {
+
         if (!this.input.value || this.input.value === ' ') {
             return;
         }
@@ -179,9 +180,9 @@ export default class TaskReport {
      *
      * @param index{number}
      * @param actionAnim{string}
-     * @param cb {(item: HTMLElement, actionAnim: string) => unknown | null}
+     * @param {(item: HTMLElement, actionAnim: string) => unknown | null} [cb]
      */
-    controlAnimation(index, actionAnim, cb = null) {
+    controlAnimation(index, actionAnim, cb) {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         afterAnimationEnd(end => {

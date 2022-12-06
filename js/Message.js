@@ -1,6 +1,8 @@
+import Component from "./Component.js";
 
-class Message {
+class Message extends Component {
     constructor() {
+        super();
         this.timer = null;
         this.element = document.createElement('div')
         this.createMessage = this.createMessage.bind(this);
@@ -43,6 +45,10 @@ class Message {
     autoDeleteMessage(ms = 3000) {
         clearTimeout(this.timer)
         this.timer = setTimeout(() => this.deleteMessage(), ms)
+    }
+
+    render() {
+
     }
 }
 
