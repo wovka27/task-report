@@ -66,8 +66,7 @@ export default class TaskReport {
         this.renderTasksList(data)
         this.renderArchive();
         scrollArchive('.' + this.archive.className, (isScroll) => {
-            const items = document.querySelectorAll('.archive-target')
-            console.log(isScroll)
+            const items = document.querySelectorAll('.archive-target');
             items.forEach(item => {
                 if (isScroll) {
                     item.style.pointerEvents = 'none';
