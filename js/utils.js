@@ -102,7 +102,7 @@ export const afterAnimationEnd = (cb) => {
     document.addEventListener('animationend', handler)
 }
 
-export const scrollArchive = (selector, cb) => {
+export const scrollArchive = (selector) => {
     const $el = document.querySelector(selector)
 
     let scroll = {pos: 0, coorX: 0, speed: 1}
@@ -117,7 +117,6 @@ export const scrollArchive = (selector, cb) => {
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         isScroll = false;
-        cb?.(isScroll)
     }
 
     const move = (e) => {
@@ -126,13 +125,20 @@ export const scrollArchive = (selector, cb) => {
         } else {
             isScroll = false;
         }
-        cb?.(isScroll)
         const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
         $el.scrollLeft = - data;
     }
+
+    Array.from($el.children).forEach(item => {
+        if (isScroll) {
+            item.style.pointerEvents = 'none';
+        } else {
+            item.style.pointerEvents = 'auto';
+        }
+    })
 
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
