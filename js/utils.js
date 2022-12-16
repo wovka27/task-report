@@ -108,9 +108,9 @@ export const scrollArchive = (selector) => {
     let scroll = {pos: 0, coorX: 0, speed: 1}
     let isScroll = false;
 
-    const noClick = () => {
+    const noClick = (flag) => {
         Array.from($el.children).forEach(item => {
-            if (isScroll) {
+            if (flag) {
                 item.style.pointerEvents = 'none';
             } else {
                 item.style.pointerEvents = 'auto';
@@ -127,7 +127,7 @@ export const scrollArchive = (selector) => {
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         isScroll = false;
-        noClick();
+        noClick(isScroll);
     }
 
     const move = (e) => {
@@ -136,7 +136,7 @@ export const scrollArchive = (selector) => {
         } else {
             isScroll = false;
         }
-        noClick()
+        noClick(isScroll)
         const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
