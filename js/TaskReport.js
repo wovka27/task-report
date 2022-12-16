@@ -65,7 +65,17 @@ export default class TaskReport {
         this.input.value = null;
         this.renderTasksList(data)
         this.renderArchive();
-        scrollArchive('.' + this.archive.className)
+        scrollArchive('.' + this.archive.className, (isScroll) => {
+            const items = document.querySelectorAll('.archive-target')
+            console.log(isScroll)
+            items.forEach(item => {
+                if (isScroll) {
+                    item.style.pointerEvents = 'none';
+                } else {
+                    item.style.pointerEvents = 'auto';
+                }
+            })
+        })
 
         document.body.addEventListener('click', this.clickHandler.bind(this))
         document.body.addEventListener('keydown', this.keyDownHandler);
