@@ -108,6 +108,16 @@ export const scrollArchive = (selector) => {
     let scroll = {pos: 0, coorX: 0, speed: 1}
     let isScroll = false;
 
+    const noClick = () => {
+        Array.from($el.children).forEach(item => {
+            if (isScroll) {
+                item.style.pointerEvents = 'none';
+            } else {
+                item.style.pointerEvents = 'auto';
+            }
+        })
+    }
+
     const down = (e) => {
         scroll.coorX = e.pageX - $el.offsetLeft;
         $el.addEventListener('mousemove', move);
@@ -117,6 +127,7 @@ export const scrollArchive = (selector) => {
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         isScroll = false;
+        noClick();
     }
 
     const move = (e) => {
@@ -125,20 +136,13 @@ export const scrollArchive = (selector) => {
         } else {
             isScroll = false;
         }
+        noClick()
         const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
         $el.scrollLeft = - data;
     }
-
-    Array.from($el.children).forEach(item => {
-        if (isScroll) {
-            item.style.pointerEvents = 'none';
-        } else {
-            item.style.pointerEvents = 'auto';
-        }
-    })
 
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
