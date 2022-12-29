@@ -244,13 +244,13 @@ export default class TaskReport {
 
     renderArchive = () => {
         const {data} = useStorage(ARCHIVE_LISTS);
-        this.archive.innerHTML = data?.map(item => `
+        this.archive.innerHTML = data ? data.map(item => `
             <li class="archive-lists__list archive-target" data-tasks="${item.today}">
                 <p class="archive-lists__list-date archive-target" data-tasks="${item.today}">${item.today}</p>
                 <p class="archive-lists__list-content archive-target" data-tasks="${item.today}">${item.tasks[0].value === ('' || '\n') ? '...' : item.tasks[0].value}</p>
                 <span class="archive-lists__list-close archive-delete" data-tasks="${item.today}"></span>
             </li>`
-        ).join('');
+        ).join('') : '';
     }
 
     viewArchiveTasks = (e) => {
