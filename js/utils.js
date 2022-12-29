@@ -1,10 +1,6 @@
 export const date = {
-    get dayWeek() {
-        return ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()];
-    },
-    get today() {
-        return new Date().toISOString().slice(0, 10).split('-').reverse().join('.')
-    }
+    dayWeek: (() => ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][new Date().getDay()])(),
+    today: (() => new Date().toISOString().slice(0, 10).split('-').reverse().join('.'))()
 }
 
 export const DAY_WEEK = date.dayWeek;
@@ -14,7 +10,7 @@ export const ARCHIVE_LISTS = 'archive-lists';
 
 export const getValues = (items, valCb) => items?.map((item) => valCb(item)).join('');
 
-export const writeClipboard = async (val = '') => {
+export const writeClipboard = async (val) => {
     if (!Boolean(val)) {
         return;
     }
@@ -78,7 +74,7 @@ export const setEventListeners = (target, handlers = [], remove = false) => {
  *
  * @param name {string}
  */
-export const useStorage =  (name= TASK_REPORT) => {
+export const useStorage = (name = TASK_REPORT) => {
     const data = storage.get(name);
     const setData = (data) => storage.set(name, data)
     const deleteData = () => storage.delete(name);
@@ -137,14 +133,14 @@ export const scrollArchive = (selector) => {
             isScroll = false;
         }
         noClick(isScroll)
-        const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
+        const data = -scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
-        $el.scrollLeft = - data;
+        $el.scrollLeft = -data;
     }
 
-    $el.addEventListener('mousedown',  down);
+    $el.addEventListener('mousedown', down);
     document.addEventListener('mouseup', up);
 }
 
@@ -156,6 +152,6 @@ export const scrollArchive = (selector) => {
 export const textDivider = (text) => {
     const textArr = text.split(' ');
     const startArgs = textArr.findIndex(item => item.match(/:+$/));
-    const textArgs = startArgs !== -1 && textArr.slice(startArgs + 1, textArr.length).map(item =>`   - ${item}`).join('\n');
+    const textArgs = startArgs !== -1 && textArr.slice(startArgs + 1, textArr.length).map(item => `   - ${item}`).join('\n');
     return textArgs ? `${textArr.slice(0, startArgs + 1).join(' ')}\n${textArgs}` : text;
 }

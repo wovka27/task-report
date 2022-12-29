@@ -5,11 +5,13 @@ import {
     DAY_WEEK,
     getChangeTask,
     getValues,
-    noDuplicate, scrollArchive,
+    noDuplicate,
+    scrollArchive,
     setEventListeners,
     setStorageTask,
     storage,
-    TASK_REPORT, textDivider,
+    TASK_REPORT,
+    textDivider,
     useStorage,
     writeClipboard
 } from './utils.js'
@@ -46,20 +48,9 @@ export default class TaskReport {
         this.taskItem = options.taskList.taskItem.className;
         this.deleteItemBtn = options.taskList.taskItem.deleteItemBtn;
         this.taskValueItem = options.taskList.taskItem.taskValueItem;
-        this.archive = document.getElementsByClassName('archive-lists')[0];
+        this.archive = document.querySelector('.archive-lists');
 
         this.message = new Message();
-
-        this.addTask = this.addTask.bind(this)
-        this.deleteItem = this.deleteItem.bind(this);
-        this.changeItem = this.changeItem.bind(this);
-        this.changeItem = this.changeItem.bind(this);
-        this.controlAnimation = this.controlAnimation.bind(this);
-        this.createTask = this.createTask.bind(this)
-        this.renderTasksList = this.renderTasksList.bind(this);
-        this.keyDownHandler = this.keyDownHandler.bind(this);
-        this.renderArchive = this.renderArchive.bind(this);
-        this.viewArchiveTasks = this.viewArchiveTasks.bind(this);
 
         const {data} = useStorage();
         this.input.value = null;
@@ -81,7 +72,7 @@ export default class TaskReport {
      * @param e{MouseEvent}
      * @returns {Promise<void>}
      */
-    async copy(e) {
+    copy = async (e) => {
         let self = this;
         e.preventDefault();
         const {data} = useStorage();
@@ -103,7 +94,7 @@ export default class TaskReport {
      *
      * @param e{MouseEvent}
      */
-    deleteStorageTasks(e) {
+    deleteStorageTasks = (e) => {
         e.preventDefault();
         if (this.taskListEmpty) {
             this.message.showMessage('Список пуст')
@@ -121,7 +112,7 @@ export default class TaskReport {
      *
      * @param e{MouseEvent}
      */
-    addTask(e) {
+    addTask = (e) => {
 
         if (!this.input.value || this.input.value === ' ') {
             return;
@@ -139,7 +130,7 @@ export default class TaskReport {
      *
      * @param e{MouseEvent}
      */
-    deleteItem(e) {
+    deleteItem = (e) => {
         const {setResult, result} = getChangeTask('filter', item => item.id !== +e.target.id)
         setResult();
         const index = Array.from(this.taskList?.children).findIndex(item => item.children[1].id === e.target.id)
@@ -155,7 +146,7 @@ export default class TaskReport {
      *
      * @param e{MouseEvent}
      */
-    changeItem(e) {
+    changeItem = (e) =>{
         const {tasks, result, setResult} = getChangeTask('find', item => item.id === +e.target.dataset.content)
         e.target.contentEditable = true
         const handler = (event) => {
@@ -182,7 +173,7 @@ export default class TaskReport {
      * @param actionAnim{string}
      * @param {(item: HTMLElement, actionAnim: string) => unknown | null} [cb]
      */
-    controlAnimation(index, actionAnim, cb) {
+    controlAnimation = (index, actionAnim, cb) => {
         const item = this.taskList?.children[index];
         item?.classList.add(`animated-${actionAnim}`);
         afterAnimationEnd(end => {
@@ -197,7 +188,7 @@ export default class TaskReport {
      *
      * @param item{{value: string; id: number | string} | null}
      */
-    createTask(item) {
+    createTask = (item) => {
         if (!item) {
             return;
         }
@@ -223,7 +214,7 @@ export default class TaskReport {
      * @param tasks {({id: (number|string), value: string}|Array<{id: (number|string), value: string}>)[]}
      * @param {function} [cb]
      */
-    renderTasksList(tasks, cb = () => null) {
+    renderTasksList = (tasks, cb = () => null) => {
         this.taskList.innerHTML = '';
         tasks?.forEach((item, index) => {
             this.createTask(item)
@@ -235,13 +226,13 @@ export default class TaskReport {
      *
      * @param e {KeyboardEvent | MouseEvent}
      */
-    keyDownHandler(e) {
+    keyDownHandler = (e) => {
         if (!Boolean(e.code === 'Enter' && e.shiftKey) && e.code === 'Enter' && this.input.value.length !== 0) {
             this.addTask(e);
         }
     }
 
-    saveTasksListToArchive(tasks) {
+    saveTasksListToArchive = (tasks) => {
         const {setData, data} = useStorage(ARCHIVE_LISTS);
         const todayArchive = data?.find(item => item.today === date.today);
         if (!todayArchive) {
@@ -251,7 +242,7 @@ export default class TaskReport {
         }
     }
 
-    renderArchive() {
+    renderArchive = () => {
         const {data} = useStorage(ARCHIVE_LISTS);
         this.archive.innerHTML = data?.map(item => `
             <li class="archive-lists__list archive-target" data-tasks="${item.today}">
@@ -262,7 +253,7 @@ export default class TaskReport {
         ).join('');
     }
 
-    viewArchiveTasks(e) {
+    viewArchiveTasks = (e) => {
         const {setData} = useStorage()
         const {data} = useStorage(ARCHIVE_LISTS);
         const filterData = data.find(item => item.today === e.target.dataset.tasks);
@@ -270,7 +261,7 @@ export default class TaskReport {
         this.renderTasksList(filterData.tasks, index => this.controlAnimation(index, 'add'));
     }
 
-    deleteArchive(e) {
+    deleteArchive = (e) => {
         e.stopPropagation();
         const {data, setData} = useStorage(ARCHIVE_LISTS);
         const filterData = data.filter(item => item.today !== e.target.dataset.tasks)
@@ -284,7 +275,7 @@ export default class TaskReport {
      * @param e{MouseEvent}
      * @returns {Promise<void>}
      */
-    async clickHandler(e) {
+    clickHandler = async (e) => {
         switch (e.target) {
             case e.target.closest(this.deleteItemBtn):
                 this.deleteItem(e);

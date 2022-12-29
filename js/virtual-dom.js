@@ -128,9 +128,7 @@ const patchChildren = (parent, vChildren, nextVChildren) => {
     });
 
     //if (vChildren && nextVChildren) {
-    nextVChildren.slice(vChildren.length).forEach(vChild => {
-        parent.appendChild(createDOMNode(vChild));
-    });
+    nextVChildren.slice(vChildren.length).forEach(vChild => parent.appendChild(createDOMNode(vChild)));
     //}
 };
 
