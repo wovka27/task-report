@@ -81,7 +81,7 @@ export const patchNode = (node, vNode, nextVNode) => {
 
 const patchProp = (node, key, value, nextValue) => {
   // Если новое значение не задано, то удаляем атрибут
-  if (nextValue == null || nextValue === false) {
+  if (!Boolean(nextValue)) {
     node.removeAttribute(key);
     return;
   }

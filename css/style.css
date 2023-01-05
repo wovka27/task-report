@@ -11,15 +11,18 @@ ul {
     overflow-y: auto;
     height: 250px;
 }
+
 #task-list:empty {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
 }
+
 #task-list:empty:before {
     content: 'Список пуст';
 }
+
 ul.archive-lists {
     margin: 0 auto;
     display: flex;
@@ -60,7 +63,9 @@ ul li.archive-lists__list {
     width: 40px;
     height: 40px;
 }
-.archive-delete:before, .archive-delete:after {
+
+.archive-delete:before,
+.archive-delete:after {
     position: absolute;
     content: '';
     width: 10px;
@@ -73,6 +78,7 @@ ul li.archive-lists__list {
 .archive-delete:before {
     transform: rotate(45deg);
 }
+
 .archive-delete:after {
     transform: rotate(-45deg);
 }
@@ -113,11 +119,12 @@ ul li {
     border-radius: 5px;
     gap: 20px;
 }
+
 ul li:focus-visible {
     outline: none;
 }
 
-ul.result-task-list li > span {
+ul.result-task-list li>span {
     width: 30px;
     height: 30px;
     border-radius: 5px;
@@ -147,7 +154,8 @@ body {
     position: relative;
 }
 
-button, textarea {
+button,
+textarea {
     border-radius: 5px;
     border: none;
 }
@@ -167,13 +175,18 @@ button, textarea {
     max-width: 600px;
 }
 
-.form__actions, .form__field, .form {
+.form__actions,
+.form__field,
+.form {
     display: flex;
     gap: 10px;
 }
-.form, .form__field {
+
+.form,
+.form__field {
     flex-direction: column;
 }
+
 .form__field textarea {
     outline: none;
     border: none;
@@ -194,9 +207,6 @@ button, textarea {
     flex: 0 1 12%;
 }
 
-.form__actions {
-
-}
 .form__actions button {
     flex: 0 1 50%;
 }
@@ -235,19 +245,23 @@ button {
     .result {
         height: 130px;
     }
+
     button {
         padding: 5px;
     }
-   ul li.archive-lists__list {
-       padding: 5px;
-       gap: 3px;
+
+    ul li.archive-lists__list {
+        padding: 5px;
+        gap: 3px;
     }
 }
 
 .result-task-list__item-close {
     position: relative;
 }
-.result-task-list__item-close::after, .result-task-list__item-close::before {
+
+.result-task-list__item-close::after,
+.result-task-list__item-close::before {
     content: ' ';
     position: absolute;
     top: 12px;
@@ -258,11 +272,13 @@ button {
     width: 15px;
 }
 
-body.dark .result-task-list__item-close::after,body.dark .result-task-list__item-close::before {
+body.dark .result-task-list__item-close::after,
+body.dark .result-task-list__item-close::before {
     background-color: #fffa;
 }
 
-body.light .result-task-list__item-close::after,body.light .result-task-list__item-close::before {
+body.light .result-task-list__item-close::after,
+body.light .result-task-list__item-close::before {
     background-color: #000a;
 }
 
@@ -271,6 +287,7 @@ body.light .result-task-list__item-close::after,body.light .result-task-list__it
 .result-task-list__item-close::before {
     transform: rotate(45deg);
 }
+
 .result-task-list__item-close::after {
     transform: rotate(-45deg);
 }
@@ -278,6 +295,7 @@ body.light .result-task-list__item-close::after,body.light .result-task-list__it
 ul li.animated-add {
     animation: add .3s 1 ease-in-out;
 }
+
 ul li.animated-delete {
     animation: delete .3s 1 ease-in-out;
 }
@@ -290,10 +308,13 @@ ul li.animated-delete {
     justify-content: center;
     transition: all .3s;
 }
-.message, .message-inner-wrapper {
+
+.message,
+.message-inner-wrapper {
     display: flex;
     align-items: center;
 }
+
 .message-inner-wrapper {
     padding: 10px;
     border-radius: 5px;
@@ -302,6 +323,7 @@ ul li.animated-delete {
     gap: 20px;
     max-width: 300px;
 }
+
 .message__close {
     border: 1px solid;
     padding: 5px 10px;
@@ -312,6 +334,7 @@ ul li.animated-delete {
 .message.animated-show {
     animation: show .5s 1 ease-in-out;
 }
+
 .message.animated-hidden {
     animation: show .5s 1 ease-in-out;
 }
@@ -365,6 +388,7 @@ body.light .slider {
 body.dark .slider:before {
     background-color: #fff;
 }
+
 body.light .slider:before {
     background-color: #444;
 }
@@ -376,7 +400,7 @@ body.light .slider:before {
 
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -395,14 +419,17 @@ input:checked + .slider:before {
     from {
         transform: translateY(200%);
     }
+
     to {
         transform: translateY(0);
     }
 }
+
 @keyframes hidden {
     from {
         transform: translateY(0);
     }
+
     to {
         transform: translateY(200%);
     }
@@ -413,6 +440,7 @@ input:checked + .slider:before {
         opacity: 0;
         transform: translateX(-100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -424,6 +452,7 @@ input:checked + .slider:before {
         opacity: 1;
         transform: translateX(0);
     }
+
     to {
         opacity: 0;
         transform: translateX(-100%);
@@ -440,17 +469,33 @@ body.light {
     background: #ffffff;
     color: #000;
 }
-body.dark  {
+
+body.dark {
     background: #333;
     color: white;
 }
-body.dark button,body.dark .slider,body.dark .layout-block,body.dark .result-task-list__item-close,body.dark li,body.dark #task,body.dark .message-inner-wrapper, body.dark .archive-lists__list  {
+
+body.dark button,
+body.dark .slider,
+body.dark .layout-block,
+body.dark .result-task-list__item-close,
+body.dark li,
+body.dark #task,
+body.dark .message-inner-wrapper,
+body.dark .archive-lists__list {
     background-color: #444;
     box-shadow: 0 0 1px 1px #fff8;
     color: white;
 }
 
-body.light button,body.light .slider,body.light .layout-block, body.light .result-task-list__item-close, li, body.light #task, .message-inner-wrapper, body.light .archive-lists__list  {
+body.light button,
+body.light .slider,
+body.light .layout-block,
+body.light .result-task-list__item-close,
+li,
+body.light #task,
+.message-inner-wrapper,
+body.light .archive-lists__list {
     background-color: #fff;
     box-shadow: 0 0 1px 1px #0008;
     color: #000;

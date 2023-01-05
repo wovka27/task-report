@@ -1,42 +1,31 @@
-import Component from "./Component.js";
+import { afterAnimationEnd } from "./utils.js";
+import { createDOMNode, createVNode } from "./virtual-dom.js";
 
-class Message extends Component {
+class Message {
   constructor() {
-    super();
     this.timer = null;
-    this.element = document.createElement("div");
-    this.createMessage();
-    this.closeBtn = this.element.children[0].children[1];
-    this.closeBtn.addEventListener("click", this.deleteMessage);
+    this.element = createDOMNode(
+      createVNode("div", { class: "message animated-show" }, [
+        createVNode("div", { class: "message-inner-wrapper" }, [
+          createVNode("i", { class: "message__content" }),
+          createVNode(
+            "span",
+            { class: "message__close", onclick: this.closeMessage },
+            ["X"]
+          ),
+        ]),
+      ])
+    );
   }
 
-  createMessage = () => {
-    const innerWrapper = document.createElement("div");
-    const i = document.createElement("i");
-    const span = document.createElement("span");
-    this.element.className = "message animated-show";
-    innerWrapper.className = "message-inner-wrapper";
-    i.className = "message__content";
-    span.className = "message__close";
-    span.textContent = "X";
-    [i, span].forEach((item) => innerWrapper.appendChild(item));
-    this.element.append(innerWrapper);
-  };
-
-  deleteMessage = () => {
-    this.element.style.display = "none";
+  closeMessage = () => {
+    document.body.removeChild(this.element);
   };
 
   showMessage = (text) => {
     this.element.style.display = "flex";
-    this.autoDeleteMessage();
     document.body.appendChild(this.element);
     this.element.children[0].children[0].textContent = text;
-  };
-
-  autoDeleteMessage = (ms = 3000) => {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.deleteMessage(), ms);
   };
 }
 

@@ -16,28 +16,10 @@ import {
   writeClipboard,
 } from "./utils.js";
 import Message from "./Message.js";
+import { createDOMNode, createVNode } from "./virtual-dom.js";
 
 export default class TaskReport {
-  /**
-   *
-   * @param options {{
-   * form:{
-   *      element: HTMLFormElement,
-   *      input: HTMLInputElement,
-   *      addBtn: string,
-   *      clearBtn: string,
-   *      copyBtn: string,
-   * };
-   * taskList:{
-   *     element: HTMLElement | null,
-   *     taskItem: {
-   *         className: string,
-   *         deleteItemBtn: string,
-   *         taskValueItem: string
-   *     }
-   * }}
-   * }
-   */
+
   constructor(options = {}) {
     this.input = options.form.input;
     this.addBtn = options.form.addBtn;
@@ -57,7 +39,7 @@ export default class TaskReport {
     this.renderArchive();
     grabScroll("." + this.archive.className);
 
-    document.body.addEventListener("click", this.clickHandler.bind(this));
+    document.body.addEventListener("click", this.clickHandler);
     document.body.addEventListener("keydown", this.keyDownHandler);
   }
 
@@ -147,11 +129,8 @@ export default class TaskReport {
     const index = Array.from(this.taskList?.children).findIndex(
       (item) => item.children[1].id === e.target.id
     );
-    this.controlAnimation(
-      index,
-      "delete",
-      (item, actionAnim) =>
-        actionAnim === "delete" && this.taskList.removeChild(item)
+    this.controlAnimation(index, "delete", (item) =>
+      this.taskList.removeChild(item)
     );
     afterAnimationEnd((end) => end && this.renderTasksList(result));
   };
@@ -212,20 +191,32 @@ export default class TaskReport {
       return;
     }
 
-    const li = document.createElement("li");
-    const i = document.createElement("p");
-    const span = document.createElement("span");
-    li.className = this.taskItem;
-    i.classList.add(this.taskValueItem.replace(".", ""));
-    i.setAttribute("data-content", item.id);
-    i.title = "Нажмите для изменения";
-    i.textContent = item.value;
-    span.classList.add(this.deleteItemBtn.replace(".", ""));
-    span.title = "Удалить";
-    span.textContent = "";
-    span.id = item.id;
-    [i, span].forEach((item) => li.appendChild(item));
-    this.taskList.appendChild(li);
+    const vTask = createVNode(
+      "li",
+      {
+        class: this.taskItem,
+      },
+      [
+        createVNode(
+          "p",
+          {
+            class: this.taskValueItem.replace(".", ""),
+            "data-content": item.id,
+            title: "Нажмите для изменения",
+            onclick: this.changeItem,
+          },
+          [item.value]
+        ),
+        createVNode("span", {
+          class: this.deleteItemBtn.replace(".", ""),
+          title: "Удалить",
+          id: item.id,
+          onclick: this.deleteItem,
+        }),
+      ]
+    );
+
+    this.taskList.appendChild(createDOMNode(vTask));
   };
 
   /**
@@ -272,36 +263,37 @@ export default class TaskReport {
 
   renderArchive = () => {
     const { data } = useStorage(ARCHIVE_LISTS);
-    this.archive.innerHTML = data
-      ? data
-          .map(
-            (item) => `
-            <li class="archive-lists__list archive-target" data-tasks="${
-              item.today
-            }">
-                <p class="archive-lists__list-date archive-target" data-tasks="${
-                  item.today
-                }">${item.today}</p>
-                <p class="archive-lists__list-content archive-target" data-tasks="${
-                  item.today
-                }">${
-              item.tasks[0].value === ("" || "\n") ? "..." : item.tasks[0].value
-            }</p>
-                <span class="archive-lists__list-close archive-delete" data-tasks="${
-                  item.today
-                }"></span>
-            </li>`
-          )
-          .join("")
-      : "";
+    const archiveItem = (item) =>
+      createVNode(
+        "li",
+        {
+          class: "archive-lists__list",
+          "data-tasks": item.today,
+          onclick: () => this.viewArchiveTasks(item.today),
+        },
+        [
+          createVNode("p", { class: "archive-lists__list-date" }, [item.today]),
+          createVNode("p", { class: "archive-lists__list-content" }, [
+            item.tasks[0].value === ("" || "\n") ? "..." : item.tasks[0].value,
+          ]),
+          createVNode("span", {
+            class: "archive-lists__list-close",
+            onclick: this.deleteArchive,
+            "data-tasks": item.today,
+          }),
+        ]
+      );
+
+    for (const item of data) {
+      this.archive.appendChild(createDOMNode(archiveItem(item)));
+    }
   };
 
-  viewArchiveTasks = (e) => {
+  viewArchiveTasks = (id) => {
     const { setData } = useStorage();
     const { data } = useStorage(ARCHIVE_LISTS);
-    const filterData = data.find(
-      (item) => item.today === e.target.dataset.tasks
-    );
+
+    const filterData = data.find((item) => item.today === id);
     setData(filterData.tasks);
     this.renderTasksList(filterData.tasks, (index) =>
       this.controlAnimation(index, "add")
@@ -325,12 +317,6 @@ export default class TaskReport {
    */
   clickHandler = async (e) => {
     switch (e.target) {
-      case e.target.closest(this.deleteItemBtn):
-        this.deleteItem(e);
-        break;
-      case e.target.closest(this.taskValueItem):
-        this.changeItem(e);
-        break;
       case e.target.closest(this.addBtn):
         this.addTask(e);
         break;
@@ -339,12 +325,6 @@ export default class TaskReport {
         break;
       case e.target.closest(this.copyBtn):
         await this.copy(e);
-        break;
-      case e.target.closest(".archive-target"):
-        this.viewArchiveTasks(e);
-        break;
-      case e.target.closest(".archive-delete"):
-        this.deleteArchive(e);
         break;
       default:
         return;
