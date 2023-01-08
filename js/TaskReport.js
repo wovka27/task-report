@@ -151,9 +151,12 @@ export default class TaskReport {
         const blur = (e) => {
             const items = noDuplicate([...tasks, result]);
             setResult(items);
+            this.saveTasksListToArchive(items)
+            this.renderArchive();
             this.renderTasksList(items);
             setEventListeners(e.target, [handler, keyDown, blur], true);
             e.target.contentEditable = false;
+
             this.message.showMessage("Изменено");
         };
 
@@ -261,33 +264,36 @@ export default class TaskReport {
         }
     };
 
+    archiveItem = (item) =>
+        createVNode(
+            "li",
+            {
+                class: "archive-lists__list",
+                "data-tasks": item.today,
+                onclick: () => this.viewArchiveTasks(item.today),
+            },
+            [
+                createVNode("p", {class: "archive-lists__list-date"}, [item.today]),
+                createVNode("p", {class: "archive-lists__list-content"}, [
+                    item.tasks[0].value === ("" || "\n") ? "..." : item.tasks[0].value,
+                ]),
+                createVNode("span", {
+                    class: "archive-lists__list-close archive-delete",
+                    onclick: (e) => this.deleteArchive(e, item.today),
+                }, []),
+            ]
+        );
+
     renderArchive = () => {
         const {data} = useStorage(ARCHIVE_LISTS);
-        const archiveItem = (item) =>
-            createVNode(
-                "li",
-                {
-                    class: "archive-lists__list",
-                    "data-tasks": item.today,
-                    onclick: () => this.viewArchiveTasks(item.today),
-                },
-                [
-                    createVNode("p", {class: "archive-lists__list-date"}, [item.today]),
-                    createVNode("p", {class: "archive-lists__list-content"}, [
-                        item.tasks[0].value === ("" || "\n") ? "..." : item.tasks[0].value,
-                    ]),
-                    createVNode("span", {
-                        class: "archive-lists__list-close archive-delete",
-                        onclick: (e) => this.deleteArchive(e, item.today),
-                    }, []),
-                ]
-            );
 
         this.archive.innerHTML = '';
-
-        for (const item of data) {
-            this.archive.appendChild(createDOMNode(archiveItem(item)));
+        const items = () => {
+            const $fragment = new DocumentFragment()
+            data.forEach(item => $fragment.appendChild(createDOMNode(this.archiveItem(item))))
+            return $fragment
         }
+        this.archive.appendChild(items());
 
     };
 
