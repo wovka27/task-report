@@ -1,16 +1,16 @@
 export const date = {
-  dayWeek: (() =>
-    [
-      "Воскресенье",
-      "Понедельник",
-      "Вторник",
-      "Среда",
-      "Четверг",
-      "Пятница",
-      "Суббота",
-    ][new Date().getDay()])(),
-  today: (() =>
-    new Date().toISOString().slice(0, 10).split("-").reverse().join("."))(),
+    dayWeek: (() =>
+        [
+            "Воскресенье",
+            "Понедельник",
+            "Вторник",
+            "Среда",
+            "Четверг",
+            "Пятница",
+            "Суббота",
+        ][new Date().getDay()])(),
+    today: (() =>
+        new Date().toISOString().slice(0, 10).split("-").reverse().join("."))(),
 };
 
 export const DAY_WEEK = date.dayWeek;
@@ -19,13 +19,13 @@ export const TASK_REPORT = "tasks-report";
 export const ARCHIVE_LISTS = "archive-lists";
 
 export const getValues = (items, valCb) =>
-  items?.map((item) => valCb(item)).join("");
+    items?.map((item) => valCb(item)).join("");
 
 export const writeClipboard = async (val) => {
-  if (!Boolean(val)) {
-    return;
-  }
-  await navigator.clipboard.writeText(val);
+    if (!Boolean(val)) {
+        return;
+    }
+    await navigator.clipboard.writeText(val);
 };
 
 /**
@@ -38,10 +38,10 @@ export const writeClipboard = async (val) => {
  *      }}
  */
 export const getChangeTask = (type, cb) => {
-  const { data: tasks } = useStorage();
-  const result = tasks[type]((item) => cb(item));
-  const setResult = (data = result) => storage.set(TASK_REPORT, data);
-  return { tasks, result, setResult };
+    const {data: tasks} = useStorage();
+    const result = tasks[type]((item) => cb(item));
+    const setResult = (data = result) => storage.set(TASK_REPORT, data);
+    return {tasks, result, setResult};
 };
 
 /**
@@ -56,18 +56,18 @@ export const noDuplicate = (value) => [...new Set(value)];
  * @param render {(tasks: Array<{id: number | string, value: string}>) => void}
  */
 export const setStorageTask = (value, render) => {
-  storage.set(
-    TASK_REPORT,
-    noDuplicate([...(storage.get(TASK_REPORT) ?? []), value])
-  );
-  render(storage.get(TASK_REPORT));
+    storage.set(
+        TASK_REPORT,
+        noDuplicate([...(storage.get(TASK_REPORT) ?? []), value])
+    );
+    render(storage.get(TASK_REPORT));
 };
 
 export const storage = {
-  get: (name) => JSON.parse(localStorage.getItem(name)),
-  set: (name, value) =>
-    value && localStorage.setItem(name, JSON.stringify(value)),
-  delete: (name) => localStorage.removeItem(name),
+    get: (name) => JSON.parse(localStorage.getItem(name)),
+    set: (name, value) =>
+        value && localStorage.setItem(name, JSON.stringify(value)),
+    delete: (name) => localStorage.removeItem(name),
 };
 
 /**
@@ -77,16 +77,16 @@ export const storage = {
  * @param remove {boolean}
  */
 export const setEventListeners = (target, handlers = [], remove = false) => {
-  const eventNames = ["input", "keydown", "blur"];
-  if (!remove) {
-    eventNames.forEach((name, index) =>
-      target.addEventListener(name, handlers[index])
-    );
-  } else {
-    eventNames.forEach((name, index) =>
-      target.removeEventListener(name, handlers[index])
-    );
-  }
+    const eventNames = ["input", "keydown", "blur"];
+    if (!remove) {
+        eventNames.forEach((name, index) =>
+            target.addEventListener(name, handlers[index])
+        );
+    } else {
+        eventNames.forEach((name, index) =>
+            target.removeEventListener(name, handlers[index])
+        );
+    }
 };
 
 /**
@@ -94,11 +94,11 @@ export const setEventListeners = (target, handlers = [], remove = false) => {
  * @param name {string}
  */
 export const useStorage = (name = TASK_REPORT) => {
-  const data = storage.get(name);
-  const setData = (data) => storage.set(name, data);
-  const deleteData = () => storage.delete(name);
+    const data = storage.get(name);
+    const setData = (data) => storage.set(name, data);
+    const deleteData = () => storage.delete(name);
 
-  return { data, setData, deleteData };
+    return {data, setData, deleteData};
 };
 
 /**
@@ -106,62 +106,62 @@ export const useStorage = (name = TASK_REPORT) => {
  * @param cb {(animEnd: boolean) => void}
  */
 export const afterAnimationEnd = (cb) => {
-  let flag = false;
-  const handler = (e) => {
-    if (e.returnValue) {
-      flag = !flag;
-      cb(flag);
-      document.removeEventListener("animationend", handler);
-    }
-  };
-  document.addEventListener("animationend", handler);
+    let flag = false;
+    const handler = (e) => {
+        if (e.returnValue) {
+            flag = !flag;
+            cb(flag);
+            document.removeEventListener("animationend", handler);
+        }
+    };
+    document.addEventListener("animationend", handler);
 };
 
 export const grabScroll = (selector) => {
-  const $el = document.querySelector(selector);
-  const scroll = { pos: 0, coorX: 0, speed: 1 };
-  
-  let isScroll = false;
+    const $el = document.querySelector(selector);
+    const scroll = {pos: 0, coorX: 0, speed: 1};
 
-  const noClick = (flag) => {
-    Array.from($el.children).forEach((item) => {
-      if (flag) {
-        item.style.pointerEvents = "none";
-      } else {
-        item.style.pointerEvents = "auto";
-      }
-    });
-  };
+    let isScroll = false;
 
-  const down = (e) => {
-    scroll.coorX = e.pageX - $el.offsetLeft;
-    $el.addEventListener("mousemove", move);
-  };
+    const noClick = (flag) => {
+        Array.from($el.children).forEach((item) => {
+            if (flag) {
+                item.style.pointerEvents = "none";
+            } else {
+                item.style.pointerEvents = "auto";
+            }
+        });
+    };
 
-  const up = () => {
-    scroll.pos = $el.scrollLeft;
-    $el.removeEventListener("mousemove", move);
-    isScroll = false;
-    noClick(isScroll);
-  };
+    const down = (e) => {
+        scroll.coorX = e.pageX - $el.offsetLeft;
+        $el.addEventListener("mousemove", move);
+    };
 
-  const move = (e) => {
-    if (e.movementX) {
-      isScroll = true;
-    } else {
-      isScroll = false;
-    }
-    noClick(isScroll);
-    const data =
-      -scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed;
-    if (data <= 0) {
-      $el.scrollLeft = 0;
-    }
-    $el.scrollLeft = -data;
-  };
+    const up = () => {
+        scroll.pos = $el.scrollLeft;
+        $el.removeEventListener("mousemove", move);
+        isScroll = false;
+        noClick(isScroll);
+    };
 
-  $el.addEventListener("mousedown", down);
-  document.addEventListener("mouseup", up);
+    const move = (e) => {
+        if (e.movementX) {
+            isScroll = true;
+        } else {
+            isScroll = false;
+        }
+        noClick(isScroll);
+        const data =
+            -scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed;
+        if (data <= 0) {
+            $el.scrollLeft = 0;
+        }
+        $el.scrollLeft = -data;
+    };
+
+    $el.addEventListener("mousedown", down);
+    document.addEventListener("mouseup", up);
 };
 
 /**
@@ -170,15 +170,15 @@ export const grabScroll = (selector) => {
  * @return {string}
  */
 export const textDivider = (text) => {
-  const textArr = text.split(" ");
-  const startArgs = textArr.findIndex((item) => item.match(/:+$/));
-  const textArgs =
-    startArgs !== -1 &&
-    textArr
-      .slice(startArgs + 1, textArr.length)
-      .map((item) => `   - ${item}`)
-      .join("\n");
-  return textArgs
-    ? `${textArr.slice(0, startArgs + 1).join(" ")}\n${textArgs}`
-    : text;
+    const textArr = text.split(" ");
+    const startArgs = textArr.findIndex((item) => item.match(/:+$/));
+    const textArgs =
+        startArgs !== -1 &&
+        textArr
+            .slice(startArgs + 1, textArr.length)
+            .map((item) => `   - ${item}`)
+            .join("\n");
+    return textArgs
+        ? `${textArr.slice(0, startArgs + 1).join(" ")}\n${textArgs}`
+        : text;
 };
