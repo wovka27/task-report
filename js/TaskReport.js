@@ -280,7 +280,7 @@ export default class TaskReport {
                 createVNode("span", {
                     class: "archive-lists__list-close archive-delete",
                     onclick: (e) => this.deleteArchive(e, item.today),
-                }, []),
+                }, ['╳']),
             ]
         );
 
@@ -311,9 +311,7 @@ export default class TaskReport {
     deleteArchive = (e, id) => {
         e.stopPropagation();
         const {data, setData} = useStorage(ARCHIVE_LISTS);
-        const filterData = data.filter(
-            (item) => item.today !== id
-        );
+        const filterData = data.filter((item) => item.today !== id);
         setData(filterData);
         this.renderArchive();
     };

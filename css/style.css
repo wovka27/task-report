@@ -57,22 +57,18 @@ ul li.archive-lists__list {
 
 .archive-delete {
     position: absolute;
-    top: 0;
+    top: -9px;
     display: block;
-    right: 0;
-    width: 40px;
-    height: 40px;
-}
-
-.archive-delete:before,
-.archive-delete:after {
-    position: absolute;
-    content: '';
-    width: 10px;
-    height: 1px;
-    background-color: #fff;
-    top: 23px;
-    right: 15px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    background-color: #444;
+    border: 1px solid #fff8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
 }
 
 .archive-delete:before {
