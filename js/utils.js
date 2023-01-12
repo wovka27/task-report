@@ -94,7 +94,7 @@ export const setEventListeners = (target, handlers = [], remove = false) => {
  * @param name {string}
  */
 export const useStorage = (name = TASK_REPORT) => {
-    const data = storage.get(name);
+    const data = storage.get(name) || [];
     const setData = (data) => storage.set(name, data);
     const deleteData = () => storage.delete(name);
 
@@ -117,11 +117,14 @@ export const afterAnimationEnd = (cb) => {
     document.addEventListener("animationend", handler);
 };
 
+/**
+ * Горизонтальная прокрутка по клику
+ *
+ * @param {string} selector
+ */
 export const grabScroll = (selector) => {
-    const $el = document.querySelector(selector);
-    const scroll = {pos: 0, coorX: 0, speed: 1};
-
-    let isScroll = false;
+    const $el = document.querySelector(selector)
+    const scroll = {pos: 0, coorX: 0, speed: 1, isMove: false}
 
     const noClick = (flag) => {
         Array.from($el.children).forEach((item) => {
@@ -140,29 +143,28 @@ export const grabScroll = (selector) => {
 
     const up = () => {
         scroll.pos = $el.scrollLeft;
-        $el.removeEventListener("mousemove", move);
-        isScroll = false;
-        noClick(isScroll);
-    };
+        $el.removeEventListener('mousemove', move);
+        scroll.isMove = false;
+        noClick(scroll.isMove);
+    }
 
     const move = (e) => {
         if (e.movementX) {
-            isScroll = true;
+            scroll.isMove = true;
         } else {
-            isScroll = false;
+            scroll.isMove = false;
         }
-        noClick(isScroll);
-        const data =
-            -scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed;
+        noClick(scroll.isMove)
+        const data = scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
-        $el.scrollLeft = -data;
-    };
+        $el.scrollLeft = - data;
+    }
 
-    $el.addEventListener("mousedown", down);
-    document.addEventListener("mouseup", up);
-};
+    $el.addEventListener('mousedown',  down);
+    document.addEventListener('mouseup', up);
+}
 
 /**
  *
