@@ -155,7 +155,7 @@ export const grabScroll = (selector) => {
             scroll.isMove = false;
         }
         noClick(scroll.isMove)
-        const data = scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
+        const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
