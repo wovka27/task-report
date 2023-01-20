@@ -137,11 +137,13 @@ export const grabScroll = (selector) => {
     };
 
     const down = (e) => {
+        $el.style.cursor = 'grab'
         scroll.coorX = e.pageX - $el.offsetLeft;
         $el.addEventListener("mousemove", move);
     };
 
     const up = () => {
+        $el.style.cursor = 'default'
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         scroll.isMove = false;
