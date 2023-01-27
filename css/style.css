@@ -55,9 +55,9 @@ ul li.archive-lists__list {
     box-shadow: 0 0 10px 1px #c2c2c220;
 }
 
-/*ul li.archive-lists__list:hover .archive-delete  {*/
-/*    transform: scale(1);*/
-/*}*/
+ul li.archive-lists__list:hover .archive-delete  {
+    transform: scale(1);
+}
 
 .archive-delete {
     position: absolute;
@@ -70,7 +70,7 @@ ul li.archive-lists__list {
     border: 1px solid #fff8;
     border-radius: 50%;
     transition: transform .2s ease-in-out;
-    /*transform: scale(0);*/
+    transform: scale(0);
     display: flex;
     align-items: center;
     justify-content: center;
