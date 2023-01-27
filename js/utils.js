@@ -167,6 +167,13 @@ export const grabScroll = (selector) => {
         $el.scrollLeft = - data;
     }
 
+    const mousewheel = e => {
+        e.preventDefault();
+        const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        $el.scrollLeft -= (delta * 40);
+    }
+
+    $el.addEventListener('mousewheel', mousewheel)
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
 }

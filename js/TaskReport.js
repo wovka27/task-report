@@ -38,7 +38,6 @@ export default class TaskReport {
         this.renderTasksList(data);
         this.renderArchive();
         grabScroll("." + this.archive.className);
-        scrollHorizontally("." + this.archive.className)
         document.body.addEventListener("click", this.clickHandler);
         document.body.addEventListener("keydown", this.keyDownHandler);
     }
