@@ -137,12 +137,14 @@ export const grabScroll = (selector) => {
     };
 
     const down = (e) => {
+        e.preventDefault();
         $el.style.cursor = 'grab'
         scroll.coorX = e.pageX - $el.offsetLeft;
         $el.addEventListener("mousemove", move);
     };
 
-    const up = () => {
+    const up = (e) => {
+        e.preventDefault();
         $el.style.cursor = 'default'
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
@@ -151,6 +153,7 @@ export const grabScroll = (selector) => {
     }
 
     const move = (e) => {
+        e.preventDefault();
         if (e.movementX) {
             scroll.isMove = true;
         } else {
