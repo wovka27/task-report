@@ -164,29 +164,20 @@ export const grabScroll = (selector) => {
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
-        $el.scrollLeft = - data;
+        $el.scrollLeft += - data;
     }
 
     const mousewheel = e => {
         e.preventDefault();
         const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-        $el.scrollLeft -= (delta * 40);
+        $el.scrollLeft -= delta*40;
+        scroll.pos = $el.scrollLeft
     }
 
     $el.addEventListener('mousewheel', mousewheel)
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
 }
-
-export const scrollHorizontally = (selector) => {
-    const $el = document.querySelector(selector);
-    const handle = e => {
-        e.preventDefault();
-        const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-        $el.scrollLeft -= (delta * 40);
-    }
-    $el.addEventListener('mousewheel', handle)
-};
 
 /**
  *

@@ -13,7 +13,7 @@ import {
     TASK_REPORT,
     textDivider,
     useStorage,
-    writeClipboard, scrollHorizontally,
+    writeClipboard,
 } from "./utils.js";
 import Message from "./Message.js";
 import {createDOMNode, createVNode} from "./virtual-dom.js";
