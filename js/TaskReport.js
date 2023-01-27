@@ -13,7 +13,7 @@ import {
     TASK_REPORT,
     textDivider,
     useStorage,
-    writeClipboard,
+    writeClipboard, scrollHorizontally,
 } from "./utils.js";
 import Message from "./Message.js";
 import {createDOMNode, createVNode} from "./virtual-dom.js";
@@ -38,7 +38,7 @@ export default class TaskReport {
         this.renderTasksList(data);
         this.renderArchive();
         grabScroll("." + this.archive.className);
-
+        scrollHorizontally("." + this.archive.className)
         document.body.addEventListener("click", this.clickHandler);
         document.body.addEventListener("keydown", this.keyDownHandler);
     }

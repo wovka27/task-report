@@ -168,6 +168,16 @@ export const grabScroll = (selector) => {
     document.addEventListener('mouseup', up);
 }
 
+export const scrollHorizontally = (selector) => {
+    const $el = document.querySelector(selector);
+    const handle = e => {
+        e.preventDefault();
+        const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        $el.scrollLeft -= (delta * 40);
+    }
+    $el.addEventListener('mousewheel', handle)
+};
+
 /**
  *
  * @param {string} text
