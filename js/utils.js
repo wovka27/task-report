@@ -154,7 +154,7 @@ export const grabScroll = (selector) => {
 
     const move = (e) => {
         e.preventDefault();
-        if (e.movementX > 0) {
+        if (e.movementX) {
             scroll.isMove = true;
         } else {
             scroll.isMove = false;
