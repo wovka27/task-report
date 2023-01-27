@@ -169,6 +169,7 @@ export const grabScroll = (selector) => {
 
     const mousewheel = e => {
         e.preventDefault();
+        if (scroll.isMove) return
         const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
         $el.scrollLeft -= delta*40;
         scroll.pos = $el.scrollLeft
