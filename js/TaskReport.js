@@ -17,10 +17,12 @@ import {
 } from "./utils.js";
 import Message from "./Message.js";
 import {createDOMNode, createVNode} from "./virtual-dom.js";
+import Component from "./Component.js";
 
-export default class TaskReport {
+export default class TaskReport extends Component {
 
     constructor(options = {}) {
+        super();
         this.input = options.form.input;
         this.addBtn = options.form.addBtn;
         this.copyBtn = options.form.copyBtn;
@@ -335,4 +337,8 @@ export default class TaskReport {
                 return;
         }
     };
+
+    render = () => {
+
+    }
 }

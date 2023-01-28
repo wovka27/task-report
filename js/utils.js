@@ -15,6 +15,8 @@ export const date = {
 
 export const DAY_WEEK = date.dayWeek;
 
+export const checkBrowser = (type) => navigator.userAgent.toLowerCase().match(type)
+
 export const TASK_REPORT = "tasks-report";
 export const ARCHIVE_LISTS = "archive-lists";
 
@@ -167,15 +169,16 @@ export const grabScroll = (selector) => {
         $el.scrollLeft += - data;
     }
 
+
     const mousewheel = e => {
         e.preventDefault();
         if (scroll.isMove) return
-        const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        const delta = Math.max(-scroll.speed, Math.min(scroll.speed, (e.wheelDelta || -e.detail)));
         $el.scrollLeft -= delta*40;
         scroll.pos = $el.scrollLeft
     }
 
-    $el.addEventListener('mousewheel', mousewheel)
+    $el.addEventListener(checkBrowser('firefox') ? 'DOMMouseScroll' : 'mousewheel', mousewheel)
     $el.addEventListener('mousedown',  down);
     document.addEventListener('mouseup', up);
 }
