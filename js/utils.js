@@ -174,7 +174,7 @@ export const grabScroll = (selector) => {
         e.preventDefault();
         if (scroll.isMove) return
         const delta = Math.max(-scroll.speed, Math.min(scroll.speed, (e.wheelDelta || -e.detail)));
-        $el.scrollLeft -= delta*40;
+        $el.scrollLeft -= delta * 100;
         scroll.pos = $el.scrollLeft
     }
 
