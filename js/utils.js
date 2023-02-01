@@ -150,7 +150,7 @@ export const grabScroll = (selector) => {
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         scroll.isMove = false;
-        // noClick(scroll.isMove);
+        noClick(scroll.isMove);
     }
     /**
      *
@@ -169,7 +169,7 @@ export const grabScroll = (selector) => {
         } else {
             scroll.isMove = false;
         }
-        // noClick(scroll.isMove)
+        noClick(scroll.isMove)
         const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
@@ -180,7 +180,7 @@ export const grabScroll = (selector) => {
 
     /**
      *
-     * @param e {WheelEvent}
+     * @param e {WheelEvent & {wheelDelta: number}}
      */
     const mousewheel = e => {
         e.preventDefault();
