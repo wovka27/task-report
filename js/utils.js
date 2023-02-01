@@ -146,12 +146,20 @@ export const grabScroll = (selector) => {
     };
 
     const up = (e) => {
-        e.preventDefault();
         $el.style.cursor = 'default'
         scroll.pos = $el.scrollLeft;
         $el.removeEventListener('mousemove', move);
         scroll.isMove = false;
-        noClick(scroll.isMove);
+        // noClick(scroll.isMove);
+    }
+    /**
+     *
+     * @param e {MouseEvent}
+     */
+    const click = (e) => {
+        if (scroll.isMove) {
+            e.preventDefault();
+        }
     }
 
     const move = (e) => {
@@ -161,15 +169,19 @@ export const grabScroll = (selector) => {
         } else {
             scroll.isMove = false;
         }
-        noClick(scroll.isMove)
+        // noClick(scroll.isMove)
         const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
         if (data <= 0) {
             $el.scrollLeft = 0;
         }
         $el.scrollLeft += - data;
+        $el.style.cursor = 'grabbing'
     }
 
-
+    /**
+     *
+     * @param e {WheelEvent}
+     */
     const mousewheel = e => {
         e.preventDefault();
         if (scroll.isMove) return
@@ -180,6 +192,7 @@ export const grabScroll = (selector) => {
 
     $el.addEventListener(checkBrowser('firefox') ? 'DOMMouseScroll' : 'mousewheel', mousewheel)
     $el.addEventListener('mousedown',  down);
+    $el.addEventListener('click', click)
     document.addEventListener('mouseup', up);
 }
 
