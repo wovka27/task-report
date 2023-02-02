@@ -126,7 +126,6 @@ export const afterAnimationEnd = (cb) => {
  */
 export const grabScroll = (selector) => {
     const $el = document.querySelector(selector)
-    const scroll = {pos: 0, coorX: 0, speed: 1, isMove: false}
 
     const noClick = (flag) => {
         Array.from($el.children).forEach((item) => {
@@ -138,43 +137,40 @@ export const grabScroll = (selector) => {
         });
     };
 
+    /**
+     *
+     * @param e {MouseEvent}
+     */
     const down = (e) => {
         e.preventDefault();
         $el.style.cursor = 'grab'
-        scroll.coorX = e.pageX - $el.offsetLeft;
+        $el.savedPageX = e.pageX;
+        $el.savedScrollLeft = $el.scrollLeft;
         $el.addEventListener("mousemove", move);
     };
 
-    const up = (e) => {
+    const up = () => {
         $el.style.cursor = 'default'
-        scroll.pos = $el.scrollLeft;
+        $el.savedPageX = null
         $el.removeEventListener('mousemove', move);
-        scroll.isMove = false;
-        noClick(scroll.isMove);
+        noClick(false);
     }
     /**
      *
      * @param e {MouseEvent}
      */
-    const click = (e) => {
-        if (scroll.isMove) {
-            e.preventDefault();
-        }
-    }
-
     const move = (e) => {
         e.preventDefault();
-        if (e.movementX) {
-            scroll.isMove = true;
-        } else {
-            scroll.isMove = false;
+        if (!$el.savedPageX) {
+            return;
         }
-        noClick(scroll.isMove)
-        const data = - scroll.pos + (e.pageX - $el.offsetLeft - scroll.coorX) * scroll.speed
-        if (data <= 0) {
-            $el.scrollLeft = 0;
-        }
-        $el.scrollLeft += - data;
+        // if (e.movementX) {
+        //     scroll.isMove = true;
+        // } else {
+        //     scroll.isMove = false;
+        // }
+        noClick($el.savedPageX);
+        $el.scrollLeft =  $el.savedScrollLeft + $el.savedPageX - e.pageX;
         $el.style.cursor = 'grabbing'
     }
 
@@ -184,16 +180,25 @@ export const grabScroll = (selector) => {
      */
     const mousewheel = e => {
         e.preventDefault();
-        if (scroll.isMove) return
-        const delta = Math.max(-scroll.speed, Math.min(scroll.speed, (e.wheelDelta || -e.detail)));
+        if ($el.savedPageX) return;
+        const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
         $el.scrollLeft -= delta * 100;
-        scroll.pos = $el.scrollLeft
+        $el.savedScrollLeft = $el.scrollLeft
     }
 
-    $el.addEventListener(checkBrowser('firefox') ? 'DOMMouseScroll' : 'mousewheel', mousewheel)
-    $el.addEventListener('mousedown',  down);
-    $el.addEventListener('click', click)
-    document.addEventListener('mouseup', up);
+    /**
+     *
+     * @type {Parameters<(type: keyof DocumentEventMap, listener: (this:Element, ev: any) => any, options?: boolean | AddEventListenerOptions) => void>[]}
+     */
+    const events = [
+        ['mousedown',  down],
+        ['mouseup', up],
+        [checkBrowser('firefox') ? 'DOMMouseScroll' : 'mousewheel', mousewheel]
+    ]
+
+    for (const eventArgs of events) {
+        $el.addEventListener(...eventArgs);
+    }
 }
 
 /**
