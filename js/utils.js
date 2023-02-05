@@ -1,6 +1,5 @@
 export const date = {
-    dayWeek: (() =>
-        [
+    dayWeek: [
             "Воскресенье",
             "Понедельник",
             "Вторник",
@@ -8,9 +7,8 @@ export const date = {
             "Четверг",
             "Пятница",
             "Суббота",
-        ][new Date().getDay()])(),
-    today: (() =>
-        new Date().toISOString().slice(0, 10).split("-").reverse().join("."))(),
+        ][new Date().getDay()],
+    today: new Date().toISOString().slice(0, 10).split("-").reverse().join("."),
 };
 
 export const DAY_WEEK = date.dayWeek;
@@ -120,13 +118,17 @@ export const afterAnimationEnd = (cb) => {
 };
 
 /**
- * Горизонтальная прокрутка по клику
+ * Горизонтальная прокрутка по клику и колесику
  *
  * @param {string} selector
  */
 export const grabScroll = (selector) => {
     const $el = document.querySelector(selector)
 
+    /**
+     * Отключение всех событий у потомков при скролле по клику
+     * @param flag
+     */
     const noClick = (flag) => {
         Array.from($el.children).forEach((item) => {
             if (flag) {
@@ -197,7 +199,7 @@ export const grabScroll = (selector) => {
     ]
 
     for (const eventArgs of events) {
-        window.addEventListener(...eventArgs);
+        $el.addEventListener(...eventArgs);
     }
 }
 
