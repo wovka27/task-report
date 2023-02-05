@@ -146,13 +146,11 @@ export const grabScroll = (selector) => {
         $el.style.cursor = 'grab'
         $el.savedPageX = e.pageX;
         $el.savedScrollLeft = $el.scrollLeft;
-        $el.addEventListener("mousemove", move);
     };
 
     const up = () => {
         $el.style.cursor = 'default'
         $el.savedPageX = null
-        $el.removeEventListener('mousemove', move);
         noClick(false);
     }
     /**
@@ -161,17 +159,17 @@ export const grabScroll = (selector) => {
      */
     const move = (e) => {
         e.preventDefault();
-        if (!$el.savedPageX) {
-            return;
-        }
-        // if (e.movementX) {
-        //     scroll.isMove = true;
-        // } else {
-        //     scroll.isMove = false;
-        // }
+        if (!$el.savedPageX) return;
         noClick($el.savedPageX);
         $el.scrollLeft =  $el.savedScrollLeft + $el.savedPageX - e.pageX;
         $el.style.cursor = 'grabbing'
+    }
+
+    const leave = e => {
+        if ($el.savedPageX) {
+            $el.savedPageX = null;
+            return
+        }
     }
 
     /**
@@ -191,13 +189,15 @@ export const grabScroll = (selector) => {
      * @type {Parameters<(type: keyof DocumentEventMap, listener: (this:Element, ev: any) => any, options?: boolean | AddEventListenerOptions) => void>[]}
      */
     const events = [
+        ['mouseleave', leave],
+        ["mousemove", move],
         ['mousedown',  down],
         ['mouseup', up],
         [checkBrowser('firefox') ? 'DOMMouseScroll' : 'mousewheel', mousewheel]
     ]
 
     for (const eventArgs of events) {
-        $el.addEventListener(...eventArgs);
+        window.addEventListener(...eventArgs);
     }
 }
 
