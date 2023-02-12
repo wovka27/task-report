@@ -280,6 +280,7 @@ export default class TaskReport extends Component {
                 ]),
                 createVNode("span", {
                     class: "archive-lists__list-close archive-delete",
+                    title: 'Удалить',
                     onclick: (e) => this.deleteArchive(e, item.today),
                 }, ['╳']),
             ]
@@ -289,12 +290,9 @@ export default class TaskReport extends Component {
         const {data} = useStorage(ARCHIVE_LISTS);
 
         this.archive.innerHTML = '';
-        const items = () => {
-            const $fragment = new DocumentFragment()
-            data.forEach(item => $fragment.appendChild(createDOMNode(this.archiveItem(item))))
-            return $fragment
-        }
-        this.archive.appendChild(items());
+        const $fragment = new DocumentFragment()
+        data.forEach(item => $fragment.appendChild(createDOMNode(this.archiveItem(item))))
+        this.archive.appendChild($fragment);
 
     };
 
