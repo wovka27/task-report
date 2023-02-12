@@ -63,7 +63,6 @@ ul li.archive-lists__list:hover .archive-delete  {
 .archive-delete {
     position: absolute;
     top: -9px;
-    display: block;
     right: -9px;
     width: 20px;
     height: 20px;
@@ -84,6 +83,12 @@ ul li.archive-lists__list:hover .archive-delete  {
 
 .archive-delete:after {
     transform: rotate(-45deg);
+}
+
+@media screen and (max-width: 768px){
+    .archive-delete {
+        transform: scale(1);
+    }
 }
 
 ul li.archive-lists__list p:last-child {
