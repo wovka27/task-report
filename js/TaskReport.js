@@ -114,7 +114,7 @@ export default class TaskReport extends Component {
         const {data} = useStorage();
         this.saveTasksListToArchive(data);
         this.renderArchive();
-        this.input.value = null;
+        this.input.value = '';
         this.form.reset();
     };
 
@@ -244,8 +244,9 @@ export default class TaskReport extends Component {
     keyDownHandler = (e) => {
         if (
             !Boolean(e.code === "Enter" && e.shiftKey) &&
-            e.code === "Enter"
+            e.code === "Enter" && Boolean(this.input.value)
         ) {
+            this.input.blur();
             this.addBtn.click();
         }
     };
