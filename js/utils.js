@@ -1,14 +1,6 @@
 export const date = {
-    dayWeek: [
-            "Воскресенье",
-            "Понедельник",
-            "Вторник",
-            "Среда",
-            "Четверг",
-            "Пятница",
-            "Суббота",
-        ][new Date().getDay()],
-    today: new Date().toISOString().slice(0, 10).split("-").reverse().join("."),
+    dayWeek: new Intl.DateTimeFormat('ru', {weekday: 'long'}).format(),
+    today: new Intl.DateTimeFormat('ru').format(),
 };
 
 export const DAY_WEEK = date.dayWeek;
