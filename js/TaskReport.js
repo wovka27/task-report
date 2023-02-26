@@ -23,6 +23,7 @@ export default class TaskReport extends Component {
 
     constructor(options = {}) {
         super();
+        this.form = options.form.element;
         this.input = options.form.input;
         this.addBtn = options.form.addBtn;
         this.copyBtn = options.form.copyBtn;
@@ -40,6 +41,7 @@ export default class TaskReport extends Component {
         this.renderTasksList(data);
         this.renderArchive();
         grabScroll("." + this.archive.className);
+        this.form.addEventListener('submit', this.addTask);
         document.body.addEventListener("click", this.clickHandler);
         document.body.addEventListener("keydown", this.keyDownHandler);
     }
@@ -58,17 +60,12 @@ export default class TaskReport extends Component {
         let self = this;
         e.preventDefault();
         const {data} = useStorage();
-        if (!data || data.length === 0) {
+        if (data?.length === 0) {
             self.message.showMessage("Не удалось скопировать. Список пуст.");
             return;
         }
         try {
-            await writeClipboard(
-                `${DAY_WEEK}:\n${getValues(
-                    data,
-                    (item) => ` - ${textDivider(item.value)}\n`
-                )}`
-            );
+            await writeClipboard(`${DAY_WEEK}:\n${getValues(data, (item) => ` - ${textDivider(item.value)}\n`)}`);
             await self.saveTasksListToArchive(data);
             await self.renderArchive();
             self.message.showMessage("Успешно скопировано");
@@ -102,12 +99,15 @@ export default class TaskReport extends Component {
      * @param e{MouseEvent}
      */
     addTask = (e) => {
-        if (!this.input.value || this.input.value === " ") {
+        e.preventDefault();
+        const {task} = Object.fromEntries(new FormData(e.target))
+        if (!task || !task.match(/.*\S+.*/g)) {
+            this.message.showMessage('Давай по новой. Все Хуйня!');
             return;
         }
-        e.preventDefault();
+
         setStorageTask(
-            {id: Date.now(), value: this.input.value},
+            {id: Date.now(), value: task},
             this.renderTasksList
         );
         this.controlAnimation(this.taskList.children.length - 1, "add");
@@ -115,6 +115,7 @@ export default class TaskReport extends Component {
         this.saveTasksListToArchive(data);
         this.renderArchive();
         this.input.value = null;
+        this.form.reset();
     };
 
     /**
@@ -243,10 +244,9 @@ export default class TaskReport extends Component {
     keyDownHandler = (e) => {
         if (
             !Boolean(e.code === "Enter" && e.shiftKey) &&
-            e.code === "Enter" &&
-            this.input.value.length !== 0
+            e.code === "Enter"
         ) {
-            this.addTask(e);
+            this.addBtn.click();
         }
     };
 
@@ -322,9 +322,6 @@ export default class TaskReport extends Component {
      */
     clickHandler = async (e) => {
         switch (e.target) {
-            case e.target.closest(this.addBtn):
-                this.addTask(e);
-                break;
             case e.target.closest(this.clearBtn):
                 this.deleteStorageTasks(e);
                 break;

@@ -5,7 +5,7 @@ new TaskReport({
   form: {
     element: form,
     input: form[0],
-    addBtn: "#" + form[1].id,
+    addBtn: form[1],
     clearBtn: "#" + form[3].id,
     copyBtn: "#" + form[2].id,
   },
