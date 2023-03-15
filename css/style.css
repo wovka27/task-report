@@ -166,7 +166,7 @@ textarea {
 .container {
     padding: 20px 20px 0;
     display: flex;
-    height: 90%;
+    height: 100%;
     flex-direction: column;
     gap: 20px;
     justify-content: center;
