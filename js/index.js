@@ -1,4 +1,4 @@
-import TaskReport from "../js/TaskReport.js";
+import TaskReport from "./TaskReport.js";
 
 const form = document.forms[0];
 new TaskReport({
@@ -18,3 +18,5 @@ new TaskReport({
     },
   },
 });
+
+

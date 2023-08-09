@@ -246,8 +246,10 @@ export default class TaskReport extends Component {
             !Boolean(e.code === "Enter" && e.shiftKey) &&
             e.code === "Enter" && Boolean(this.input.value)
         ) {
-            this.input.blur();
             this.addBtn.click();
+            this.input.value = null
+            this.input.blur()
+            setTimeout(() => this.input.focus(), 0)
         }
     };
 
