@@ -57,17 +57,17 @@ function snow() {
       var force = minDist / (dist * dist),
         xcomp = (x - x2) / dist,
         ycomp = (y - y2) / dist,
-        deltaV = force / 5;
+        deltaV = force / .2;
 
       flake.velX -= deltaV * xcomp;
       flake.velY -= deltaV * ycomp;
 
     } else {
-      flake.velX *= .40;
+      flake.velX *= .99;
       if (flake.velY <= flake.speed) {
         flake.velY = flake.speed
       }
-      flake.velX += Math.cos(flake.step += .05) * flake.stepSize;
+      flake.velX += Math.cos(flake.step += .09) * flake.stepSize;
     }
 
     ctx.fillStyle = "rgba(255,255,255," + flake.opacity + ")";
@@ -115,7 +115,7 @@ function init() {
       x: x,
       y: y,
       size: size,
-      stepSize: (Math.random()) / 30,
+      stepSize: (Math.random()) / 60,
       step: 0,
       opacity: opacity
     });
